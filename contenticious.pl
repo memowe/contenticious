@@ -14,6 +14,7 @@ get '/(*path).html' => sub {
     my $path        = $self->stash('path');
     my $filename    = app->home->rel_file( "pages/$path.md" );
 
+    # shhh!
     if ( $path =~ /\.\./ ) {
         $self->stash(
             exception   => 'Path not allowed: ' . $path,
@@ -22,7 +23,8 @@ get '/(*path).html' => sub {
         return 1;
     }
     
-    unless ( -r $filename ) {
+    # file not found!
+    unless ( -f $filename and -r $filename ) {
         $self->render(
             template    => 'not_found',
             format      => 'html',
@@ -31,6 +33,7 @@ get '/(*path).html' => sub {
         return 1;
     }
 
+    # file found!
     my $file    = Mojo::File->new( path => $filename );
     my $html    = markdown( $file->slurp );
     my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : ( split m|/| => $path )[-1];
@@ -42,14 +45,54 @@ get '/(*path).html' => sub {
 
 } => 'content';
 
-# .../
-get '(*path)/' => sub {
-    my $self = shift;
-    my $path = $self->stash('path');
+# serve managed directories
+get '(*path)/$' => sub {
+    my $self    = shift;
+    my $path    = $self->stash('path');
+    my $dirname = app->home->rel_dir( "pages/$path" ); # without trailing /
+
+    # directory not found!
+    unless ( -d $dirname and -r $dirname and -x $dirname ) {
+        $self->render(
+            template    => 'not_found',
+            format      => 'html',
+            status      => 404,
+        );
+        return 1;
+    }
+
+    # index found!
+    if ( -f "$dirname/index.md" and -r "$dirname/index.md" ) {
+        $self->redirect_to( "$path/index.html" );
+        return 1;
+    }
     
+    # no index. now what?
+    my @choices = glob( "$dirname/*.md" );
+
+    # empty!
+    unless ( @choices ) {
+        $self->render(
+            template    => 'not_found',
+            format      => 'html',
+            status      => 404,
+        );
+        return 1;
+    }
+
+    # no choice!
+    if ( @choices == 1 and $choices[0] =~ m|.*pages($path.*).md$| ) {
+        $self->redirect_to( "$1.html" );
+        return 1;
+    }
+
+    # multiple choice!
+    my @urls = map { m|.*pages($path.*).md$| && "$1.html" } @choices;
+    $self->stash( urls => \@urls );
+
 } => 'multiple_choice';
 
-shagadelic('daemon');
+shagadelic( $ARGV[0] || 'daemon' );
 
 __DATA__
 
@@ -68,6 +111,16 @@ __DATA__
 %== content
 </body>
 </html>
+
+@@ multiple_choice.html.ep
+% layout 'wrapper';
+% stash title => 'Multiple choice!';
+<h1><%= stash 'title' %></h1>
+<ul class="multiple_choice">
+% foreach my $url ( @$urls ) {
+    <li><a href="<%= $url %>"><%= $url %></a></li>
+% }
+</ul>
 
 @@ exception.html.ep
 % layout 'wrapper';
