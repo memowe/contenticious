@@ -10,9 +10,10 @@ app->renderer->add_helper( stash => sub { shift->stash(@_) } );
 
 # serve managed content
 get '/(*path).html' => sub {
-    my $self = shift;
-    my $path = $self->stash('path');
-    
+    my $self        = shift;
+    my $path        = $self->stash('path');
+    my $filename    = app->home->rel_file( "pages/$path.md" );
+
     if ( $path =~ /\.\./ ) {
         $self->stash(
             exception   => 'Path not allowed: ' . $path,
@@ -21,7 +22,7 @@ get '/(*path).html' => sub {
         return 1;
     }
     
-    unless ( -r "$FindBin::Bin/pages/$path.md" ) {
+    unless ( -r $filename ) {
         $self->render(
             template    => 'not_found',
             format      => 'html',
@@ -30,7 +31,7 @@ get '/(*path).html' => sub {
         return 1;
     }
 
-    my $file    = Mojo::File->new( path => "pages/$path.md" );
+    my $file    = Mojo::File->new( path => $filename );
     my $html    = markdown( $file->slurp );
     my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : ( split m|/| => $path )[-1];
 
