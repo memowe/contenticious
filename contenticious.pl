@@ -6,6 +6,9 @@ use Mojolicious::Lite;
 use Text::Markdown qw( markdown );
 use Mojo::File;
 
+app->static->root( app->home->rel_dir('public') )
+    if -d app->home->rel_dir('public');
+
 app->renderer->add_helper( stash => sub { shift->stash(@_) } );
 
 # serve managed content
