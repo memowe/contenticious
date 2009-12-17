@@ -6,8 +6,13 @@ use Mojolicious::Lite;
 use Text::Markdown qw( markdown );
 use Mojo::File;
 
+# gimmeh utf-8 pls
+app->types->type( html => 'text/html; charset=utf-8' );
+
 # k. now can has stash?
 app->renderer->add_helper( stash => sub { shift->stash(@_) } );
+
+#kthx
 
 # serve static content
 app->static->root( app->home->rel_dir('public') )
@@ -104,13 +109,16 @@ shagadelic( $ARGV[0] || 'daemon' );
 __DATA__
 
 @@ layouts/wrapper.html.ep
-% $self->res->headers->content_type( 'text/html; charset: utf-8' );
 <!doctype html>
+
 <html>
 <head><title><%= $title || 'contenticious!' %></title></head>
+<link rel="stylesheet" type="text/css" href="/screen.css" media="screen">
 <body>
 <div id="content">
+
 %== content
+
 </div>
 </body>
 </html>
