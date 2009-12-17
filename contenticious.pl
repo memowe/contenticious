@@ -6,10 +6,12 @@ use Mojolicious::Lite;
 use Text::Markdown qw( markdown );
 use Mojo::File;
 
+# k. now can has stash?
+app->renderer->add_helper( stash => sub { shift->stash(@_) } );
+
+# serve static content
 app->static->root( app->home->rel_dir('public') )
     if -d app->home->rel_dir('public');
-
-app->renderer->add_helper( stash => sub { shift->stash(@_) } );
 
 # serve managed content
 get '/(*path).html' => sub {
@@ -37,13 +39,15 @@ get '/(*path).html' => sub {
     }
 
     # file found!
+
     my $file    = Mojo::File->new( path => $filename );
     my $html    = markdown( $file->slurp );
     my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : ( split m|/| => $path )[-1];
 
+    $self->render_inner( content => $html );
     $self->stash(
-        title   => $title,
-        html    => $html,
+        title       => $title,
+        template    => 'layouts/wrapper',
     );
 
 } => 'content';
@@ -99,19 +103,15 @@ shagadelic( $ARGV[0] || 'daemon' );
 
 __DATA__
 
-@@ content.html.ep
-% layout 'wrapper';
-<div id="content">
-%== $html
-</div>
-
 @@ layouts/wrapper.html.ep
 % $self->res->headers->content_type( 'text/html; charset: utf-8' );
 <!doctype html>
 <html>
 <head><title><%= $title || 'contenticious!' %></title></head>
 <body>
+<div id="content">
 %== content
+</div>
 </body>
 </html>
 
