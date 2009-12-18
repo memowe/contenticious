@@ -21,47 +21,31 @@ app->static->root( app->home->rel_dir('public') )
 # build the content tree as a HoH to file names
 sub content_tree {
     my $dirname = shift || app->home->rel_dir('pages');
-    my $tree    = {};
+    my %tree    = ();
 
     foreach my $e ( glob("$dirname/*") ) {
 
-        if ( $e =~ m|([^/]+)\.md$| and -f $e and -r $e ) {
-            $tree->{$1} = $e;
+        if ( $e =~ m|([\w_-]+)\.md$| and -f $e and -r $e ) {
+            $tree{$1} = $e;
         }
-        elsif ( -d $e and -r $e and -x $e and $e =~ m|([^/]+)$| ) {
-            $tree->{$1} = content_tree($e);
-            delete $tree->{$1} unless keys %{ $tree->{$1} };
+        elsif ( -d $e and -r $e and -x $e and $e =~ m|([\w_-]+)$| ) {
+            $tree{$1} = content_tree($e);
+            delete $tree{$1} unless keys %{ $tree{$1} };
         }
 
     }
 
-    return $tree;
+    return \%tree;
 }
 
-get '/content_tree' => sub {
-    use Data::Dumper;
-    shift->render_text( '<pre>' . Dumper(content_tree) . '</pre>' );
-}; # TODO weg
-
-# TODO alles auf den content_tree aufstützen
-
 # serve managed content
-get '/(*path).html' => sub {
+get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
     my $self        = shift;
-    my $path        = $self->stash('path');
-    my $filename    = app->home->rel_file( "pages/$path.md" );
+    my @dirs        = split m|/| => $self->stash('path');
+    my $dir_key     = join '}{' => @dirs;
 
-    # shhh!
-    if ( $path =~ /\.\./ ) {
-        $self->stash(
-            exception   => 'Path not allowed: ' . $path,
-            template    => 'exception',
-        );
-        return 1;
-    }
-    
     # file not found!
-    unless ( -f $filename and -r $filename ) {
+    unless ( eval "exists content_tree()->{$dir_key}" ) {
         $self->render(
             template    => 'not_found',
             format      => 'html',
@@ -70,11 +54,9 @@ get '/(*path).html' => sub {
         return 1;
     }
 
-    # file found!
-
-    my $file    = Mojo::File->new( path => $filename );
-    my $html    = markdown( $file->slurp );
-    my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : ( split m|/| => $path )[-1];
+    my $fpath   = eval "content_tree()->{$dir_key}";
+    my $html    = markdown( Mojo::File->new( path => $fpath )->slurp );
+    my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : $dirs[-1];
 
     $self->render_inner( content => $html );
     $self->stash(
