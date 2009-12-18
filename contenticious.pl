@@ -6,18 +6,6 @@ use Mojolicious::Lite;
 use Text::Markdown qw( markdown );
 use Mojo::File;
 
-# gimmeh utf-8 pls
-app->types->type( html => 'text/html; charset=utf-8' );
-
-# k. now can has stash?
-app->renderer->add_helper( stash => sub { shift->stash(@_) } );
-
-#kthx
-
-# serve static content
-app->static->root( app->home->rel_dir('public') )
-    if -d app->home->rel_dir('public');
-
 # build the content tree as a HoH to file names
 sub content_tree {
     my $dirname = shift || app->home->rel_dir('pages');
@@ -37,6 +25,21 @@ sub content_tree {
 
     return \%tree;
 }
+
+# gimmeh dem stash and dem content_tree, k?
+app->renderer->add_helper(
+    stash           => sub { shift->stash(@_) }
+    content_tree    => sub { content_tree }
+);
+
+# k, now gimmeh utf-8 pls
+app->types->type( html => 'text/html; charset=utf-8' );
+
+#kthx
+
+# serve static content
+app->static->root( app->home->rel_dir('public') )
+    if -d app->home->rel_dir('public');
 
 # serve managed content
 get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
