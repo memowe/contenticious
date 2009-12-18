@@ -54,6 +54,15 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
         return 1;
     }
 
+        # the eval "content_tree()->{$dir_key}" is not cool, but
+        #
+        # use List::Util qw( reduce )
+        # my $fpath = reduce {
+        #     ref $a eq 'HASH' ? $a->{$b} : content_tree()->{$a}{$b}
+        # } @dirs;
+        #
+        # is loooong and it fails in the exists part (auto-vivification).
+
     my $fpath   = eval "content_tree()->{$dir_key}";
     my $html    = markdown( Mojo::File->new( path => $fpath )->slurp );
     my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : $dirs[-1];
@@ -67,13 +76,15 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
 } => 'content';
 
 # serve managed directories
-get '(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
+get '/(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
     my $self    = shift;
     my $path    = $self->stash('path');
-    my $dirname = app->home->rel_dir( "pages/$path" ); # without trailing /
+    my @dirs    = split m|/| => $path;
+    my $dir_key = join '}{' => @dirs;
 
     # directory not found!
-    unless ( -d $dirname and -r $dirname and -x $dirname ) {
+    unless ( eval "exists content_tree()->{$dir_key}"
+             and eval "ref content_tree()->{$dir_key} eq 'HASH'" ) {
         $self->render(
             template    => 'not_found',
             format      => 'html',
@@ -82,17 +93,18 @@ get '(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
         return 1;
     }
 
+    my $dir_hash = eval "content_tree()->{$dir_key}";
+
     # index found!
-    if ( -f "$dirname/index.md" and -r "$dirname/index.md" ) {
+    if ( exists $dir_hash->{index} ) {
         $self->redirect_to( "$path/index.html" );
         return 1;
     }
-    
-    # no index. now what?
-    my @choices = glob( "$dirname/*.md" );
 
-    # empty!
-    unless ( @choices ) {
+    # no index. now what?
+    
+    # empty
+    unless ( keys %$dir_hash ) {
         $self->render(
             template    => 'not_found',
             format      => 'html',
@@ -102,14 +114,14 @@ get '(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
     }
 
     # no choice!
-    if ( @choices == 1 and $choices[0] =~ m|.*pages($path.*).md$| ) {
-        $self->redirect_to( "$1.html" );
+    if ( keys %$dir_hash == 1 ) {
+        my $key = ( keys %$dir_hash )[0];
+        $self->redirect_to( "/$path/$key.html" );
         return 1;
     }
 
     # multiple choice!
-    my @urls = map { m|.*pages($path.*).md$| && "$1.html" } @choices;
-    $self->stash( urls => \@urls );
+    $self->stash( urls => [ map { "/$path/$_.html" } keys %$dir_hash ] );
 
 } => 'multiple_choice';
 
@@ -136,6 +148,7 @@ __DATA__
 % layout 'wrapper';
 % stash title => 'More than one document!';
 <h1><%= stash 'title' %></h1>
+<p>I didn't found an index document for this directory. Please choose:</p>
 <ul class="multiple_choice">
 % foreach my $url ( @$urls ) {
     <li><a href="<%= $url %>"><%= $url %></a></li>
@@ -174,11 +187,11 @@ Contenticious -- simple file based "CMS" on Mojo steroids!
 
 Contenticious is a very simple way to glue together some content to a small website. You just write Markdown files and check the generated HTML in your browser. To publish, just use the C<static> command to generate static HTML as described below.
 
-=head2 Schreiben
+=head2 HOW TO ORGANIZE YOUR CONTENT
 
-=head2 Publizieren
+=head2 HOW TO DEPLOY
 
-=head2 Anpassen
+=head2 CUSTOMIZATION (C11N)
 
 =head1 AUTHOR AND LICENSE
 
