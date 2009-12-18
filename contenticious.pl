@@ -18,6 +18,33 @@ app->renderer->add_helper( stash => sub { shift->stash(@_) } );
 app->static->root( app->home->rel_dir('public') )
     if -d app->home->rel_dir('public');
 
+# build the content tree as a HoH to file names
+sub content_tree {
+    my $dirname = shift || app->home->rel_dir('pages');
+    my $tree    = {};
+
+    foreach my $e ( glob("$dirname/*") ) {
+
+        if ( $e =~ m|([^/]+)\.md$| and -f $e and -r $e ) {
+            $tree->{$1} = $e;
+        }
+        elsif ( -d $e and -r $e and -x $e and $e =~ m|([^/]+)$| ) {
+            $tree->{$1} = content_tree($e);
+            delete $tree->{$1} unless keys %{ $tree->{$1} };
+        }
+
+    }
+
+    return $tree;
+}
+
+get '/content_tree' => sub {
+    use Data::Dumper;
+    shift->render_text( '<pre>' . Dumper(content_tree) . '</pre>' );
+}; # TODO weg
+
+# TODO alles auf den content_tree aufstützen
+
 # serve managed content
 get '/(*path).html' => sub {
     my $self        = shift;
@@ -125,7 +152,7 @@ __DATA__
 
 @@ multiple_choice.html.ep
 % layout 'wrapper';
-% stash title => 'Multiple choice!';
+% stash title => 'More than one document!';
 <h1><%= stash 'title' %></h1>
 <ul class="multiple_choice">
 % foreach my $url ( @$urls ) {
@@ -155,11 +182,21 @@ Contenticious -- simple file based "CMS" on Mojo steroids!
 
 =head1 SYNOPSIS
 
-    $ perl contenticious daemono
+    $ vim pages/index.md
+    $ mkdir pages/section
+    $ vim pages/section/foo.md
+    $ vim pages/section/bar.md
+    $ perl contenticious.pl
 
 =head1 DESCRIPTION
 
-Whoops! No documentation found!
+Contenticious is a very simple way to glue together some content to a small website. You just write Markdown files and check the generated HTML in your browser. To publish, just use the C<static> command to generate static HTML as described below.
+
+=head2 Schreiben
+
+=head2 Publizieren
+
+=head2 Anpassen
 
 =head1 AUTHOR AND LICENSE
 
