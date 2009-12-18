@@ -67,7 +67,7 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
 } => 'content';
 
 # serve managed directories
-get '(*path)/$' => sub {
+get '(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
     my $self    = shift;
     my $path    = $self->stash('path');
     my $dirname = app->home->rel_dir( "pages/$path" ); # without trailing /
