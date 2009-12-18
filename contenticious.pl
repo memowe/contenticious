@@ -28,8 +28,8 @@ sub content_tree {
 
 # gimmeh dem stash and dem content_tree, k?
 app->renderer->add_helper(
-    stash           => sub { shift->stash(@_) }
-    content_tree    => sub { content_tree }
+    stash           => sub { shift->stash(@_) },
+    content_tree    => sub { content_tree },
 );
 
 # k, now gimmeh utf-8 pls
@@ -124,9 +124,12 @@ get '/(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
     }
 
     # multiple choice!
-    $self->stash( urls => [ map { "/$path/$_.html" } keys %$dir_hash ] );
+    $self->stash(
+        urls        => [ map { "/$path/$_.html" } keys %$dir_hash ],
+        template    => 'multiple_choice',
+    );
 
-} => 'multiple_choice';
+} => 'directory';
 
 shagadelic( $ARGV[0] || 'daemon' );
 
