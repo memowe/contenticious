@@ -1,9 +1,10 @@
 * auto generated navi
+  - auch aufklappen bei multiple_choice
 
-* filename based sorting: e. g. 002_foo.md
+* filename based sorting: e. g. 002_foo.md in the navi
 
 * POD documentation
 
-* dump: automatisches generieren statischer HTML-Seiten
+* dump: generate static html pages
 
-* beliebige Formate wie bei Bootylicious' pages
+* tests
