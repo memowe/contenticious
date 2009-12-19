@@ -1,5 +1,7 @@
 * auto generated navi
 
+* filename based sorting: e. g. 002_foo.md
+
 * POD documentation
 
 * dump: automatisches generieren statischer HTML-Seiten
