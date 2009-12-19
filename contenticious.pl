@@ -142,6 +142,7 @@ __DATA__
 <head><title><%= $title || 'contenticious!' %></title></head>
 <link rel="stylesheet" type="text/css" href="/screen.css" media="screen">
 <body>
+%== include 'navi';
 <div id="content">
 
 %== content
@@ -149,6 +150,30 @@ __DATA__
 </div>
 </body>
 </html>
+
+@@ navi.html.ep
+%
+%   sub subnavi {
+%       my ($tree, $prefix) = @_;
+%       my $html = '';
+%
+%       foreach my $e ( keys %$tree ) {
+%
+%           if ( ref $tree->{$e} eq 'HASH' ) { # directory
+%               $html .= '<li><a href="' . "$prefix/$e/" . '">';
+%               $html .= $e . '</a><ul class="subnavi">';
+%               $html .= subnavi( $tree->{$e}, "$prefix/$e" );
+%               $html .= '</ul></li>';
+%           }
+%           else { # file
+%               $html .= '<li><a href="' . "$prefix/$e" . '.html">';
+%               $html .= $e . '</a></li>';
+%           }
+%       }
+%       return $html;
+%   }
+%
+<ul id="navi"><%== subnavi(content_tree, '') %></ul>
 
 @@ multiple_choice.html.ep
 % layout 'wrapper';
