@@ -73,6 +73,7 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
     $self->render_inner( content => $html );
     $self->stash(
         title       => $title,
+        dirs        => \@dirs,
         template    => 'layouts/wrapper',
     );
 
@@ -126,6 +127,7 @@ get '/(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
     # multiple choice!
     $self->stash(
         urls        => [ map { "/$path/$_.html" } keys %$dir_hash ],
+        dirs        => \@dirs,
         template    => 'multiple_choice',
     );
 
@@ -152,28 +154,24 @@ __DATA__
 </html>
 
 @@ navi.html.ep
-%
-%   sub subnavi {
-%       my ($tree, $prefix) = @_;
-%       my $html = '';
-%
-%       foreach my $e ( keys %$tree ) {
-%
-%           if ( ref $tree->{$e} eq 'HASH' ) { # directory
-%               $html .= '<li><a href="' . "$prefix/$e/" . '">';
-%               $html .= $e . '</a><ul class="subnavi">';
-%               $html .= subnavi( $tree->{$e}, "$prefix/$e" );
-%               $html .= '</ul></li>';
-%           }
-%           else { # file
-%               $html .= '<li><a href="' . "$prefix/$e" . '.html">';
-%               $html .= $e . '</a></li>';
-%           }
-%       }
-%       return $html;
+<div id="navi">
+% my $tree   = content_tree;
+% my $prefix = '';
+% foreach my $i ( 0 .. $#$dirs ) {
+%   my $dir = $dirs->[$i];
+<ul class="navi">
+%   foreach my $e ( keys %$tree ) {
+%       my $url   = "$prefix/$e";
+%       my $ext   = ref $tree->{$e} eq 'HASH' ? '/' : '.html';
+%       my $class = $e eq $dir ? ' class="here"' : '';
+    <li<%== $class %>><a href="<%= "$url$ext" %>"><%= $e %></a></li>
 %   }
-%
-<ul id="navi"><%== subnavi(content_tree, '') %></ul>
+</ul>
+%   $tree   = $tree->{$dir};
+%   $prefix = "$prefix/$dir";
+%   redo if $i == $#$dirs and ref $tree eq 'HASH'; # directory view
+% }
+</div>
 
 @@ multiple_choice.html.ep
 % layout 'wrapper';

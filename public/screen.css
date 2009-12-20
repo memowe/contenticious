@@ -12,14 +12,39 @@ body {
     background-color: #bbc;
 }
 
-#content {
+#navi, #content {
     width           : 76ex;
     color           : black;
     background-color: #f0f0f8;
     margin          : 0 auto;
-    padding         : 3em 6ex;
+    padding         : 1em 6ex 3em;
     border          : solid #99a;
     border-width    : 0 thick;
+}
+
+#navi {
+    padding-top     : 1em;
+    padding-bottom  : 1em;
+}
+
+#navi a { text-decoration: none }
+#navi a:hover { text-decoration: underline }
+
+#navi .navi {
+    display         : block;
+    margin          : 0;
+    padding         : .5em 0;
+    border-bottom   : thin solid #d0d0e0;
+}
+
+#navi .navi li {
+    margin          : 0 1ex 0 0;
+    padding         : 0;
+    display         : inline;
+}
+
+#navi .navi li.here {
+    font-weight     : bold;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -27,7 +52,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight     : bold;
     margin          : 1.5em 0 .66em;
     padding         : 1em 0 0;
-    border-top      : medium solid #e0e0e4;
+    border-top      : medium solid #d0d0e0;
 }
 
 h1:first-child {
@@ -38,6 +63,7 @@ h1 {
     font-size       : 1.8em;
     background-color: white;
     padding         : .5em 1ex;
+    margin-top      : 1em;
     margin-left     : -1ex;
     margin-right    : -1ex;
     border-radius   : .5em;
