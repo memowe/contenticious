@@ -177,7 +177,7 @@ __DATA__
 % layout 'wrapper';
 % stash title => 'No start document found!';
 <h1><%= stash 'title' %></h1>
-<p>Please choose one of the following documents:</p>
+<p>I didn't found an index document for this directory. Please choose:</p>
 <ul class="multiple_choice">
 % foreach my $url ( @$urls ) {
     <li><a href="<%= $url %>"><%= $url %></a></li>
