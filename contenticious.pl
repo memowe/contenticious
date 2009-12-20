@@ -175,9 +175,9 @@ __DATA__
 
 @@ multiple_choice.html.ep
 % layout 'wrapper';
-% stash title => 'More than one document!';
+% stash title => 'No index document found!';
 <h1><%= stash 'title' %></h1>
-<p>I didn't found an index document for this directory. Please choose:</p>
+<p>Please choose one of the following documents:</p>
 <ul class="multiple_choice">
 % foreach my $url ( @$urls ) {
     <li><a href="<%= $url %>"><%= $url %></a></li>
