@@ -99,13 +99,13 @@ get '/(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
 
     my $dir_hash = eval "content_tree()->{$dir_key}";
 
-    # start found!
-    if ( exists $dir_hash->{start} ) {
-        $self->redirect_to( "$path/start.html" );
+    # index found!
+    if ( exists $dir_hash->{index} ) {
+        $self->redirect_to( "$path/index.html" );
         return 1;
     }
 
-    # no start. now what?
+    # no index. now what?
     
     # empty
     unless ( keys %$dir_hash ) {
@@ -175,9 +175,9 @@ __DATA__
 
 @@ multiple_choice.html.ep
 % layout 'wrapper';
-% stash title => 'No start document found!';
+% stash title => 'No index document found!';
 <h1><%= stash 'title' %></h1>
-<p>I didn't found an index document for this directory. Please choose:</p>
+<p>Please choose one of the following documents:</p>
 <ul class="multiple_choice">
 % foreach my $url ( @$urls ) {
     <li><a href="<%= $url %>"><%= $url %></a></li>
@@ -206,7 +206,7 @@ Contenticious -- simple file based "CMS" on Mojo steroids!
 
 =head1 SYNOPSIS
 
-    $ vim pages/start.md
+    $ vim pages/index.md
     $ mkdir pages/section
     $ vim pages/section/foo.md
     $ vim pages/section/bar.md
