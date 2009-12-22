@@ -4,8 +4,10 @@ BEGIN { use FindBin; use lib "$FindBin::Bin/mojo/lib" }
 
 use Mojolicious::Lite;
 use Mojo::File;
+use Mojo::Command;
 use Text::Markdown qw( markdown );
 use List::Util qw( first );
+use File::Copy::Recursive qw( dircopy );
 
 # build the content tree as a LoHoLoH...
 # realized as a sub to get changed content immediately
@@ -72,6 +74,23 @@ sub active_content {
 
     return $entry, $content_tree if wantarray;
     return $entry;
+}
+
+# traverse the content_tree and execute a given sub on each data hash
+# this sub gets the data hash and also a path to that data like foo/bar/baz
+sub walk_content_tree {
+    my ( $sub, $tree, $prefix ) = @_;
+    $tree   ||= content_tree;
+    $prefix ||= '';
+
+    foreach my $data ( @$tree ) {
+
+        my $ext = $data->{type} eq 'dir' ? '/' : '.html';
+        $sub->( $data, "$prefix/$data->{name}$ext" );
+
+        walk_content_tree( $sub, $data->{content}, "$prefix/$data->{name}" )
+            if $data->{type} eq 'dir' and defined $data->{content};
+    }
 }
 
 # k, now gimmeh dem stash and dem utf-8 pls
@@ -152,6 +171,55 @@ get '(*path)/$' => [ path => qr([/\w_-]*) ] => sub {
 # need this catcher to have a content_tree in not_found.html.epl
 get '(*anything)' => \&not_found;
 
+# command line commands
+if ( my $command = $ARGV[0] ) {
+
+    my $cmd = Mojo::Command->new;
+
+    # extract the inline templates into 'templates'
+    if ( $command eq 'templates' ) {
+
+        $cmd->create_rel_dir('templates');
+        my @names = qw( layouts/wrapper navi directory not_found exception );
+
+        foreach my $template ( @names ) {
+            my $data = $cmd->get_data( "$template.html.ep", 'main' );
+            $cmd->write_rel_file( "templates/$template.html.ep", $data );
+        }
+
+        exit 0;
+    }
+    
+    # generate static html in 'static' from the pages
+    if ( $command eq 'dump' ) {
+
+        my $client = app->client->app(app); # D'oh
+        app->log->level('error');
+
+        walk_content_tree( sub {
+            my ( $data, $path ) = @_;
+
+            $client->get( $path => sub {
+                my ( $self, $tx ) = @_;
+                my $filename = "static$path";
+
+                # no index.html found
+                $filename .= 'index.html' unless $path =~ /\.html$/;
+
+                $cmd->write_rel_file( $filename, $tx->res->body );
+            });
+        });
+
+        $client->process();
+
+        # now get the static stuff from public
+        dircopy( 'public', 'static' );
+        print "Files from 'public' copied\n";
+
+        exit 0;
+    }
+}
+
 shagadelic( $ARGV[0] || 'daemon' );
 
 __DATA__
@@ -160,7 +228,10 @@ __DATA__
 <!doctype html>
 
 <html>
-<head><title><%= $title || 'contenticious!' %></title></head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title><%= $title || 'contenticious!' %></title>
+</head>
 <link rel="stylesheet" type="text/css" href="/screen.css" media="screen">
 <body>
 %== include 'navi';
