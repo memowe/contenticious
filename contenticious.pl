@@ -3,135 +3,154 @@
 BEGIN { use FindBin; use lib "$FindBin::Bin/mojo/lib" }
 
 use Mojolicious::Lite;
-use Text::Markdown qw( markdown );
 use Mojo::File;
+use Text::Markdown qw( markdown );
+use List::Util qw( first );
 
-# build the content tree as a HoH to file names
+# build the content tree as a LoHoLoH...
+# realized as a sub to get changed content immediately
 sub content_tree {
     my $dirname = shift || app->home->rel_dir('pages');
-    my %tree    = ();
+    my @tree    = ();
 
-    foreach my $e ( glob("$dirname/*") ) {
+    for ( sort glob("$dirname/*") ) {
 
-        if ( $e =~ m|([\w_-]+)\.md$| and -f $e and -r $e ) {
-            $tree{$1} = $e;
+        # content file
+        if ( /([\w_-]+)\.md$/ and -f and -r ) {
+            ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
+
+            push @tree, {
+                name        => $name,
+                filename    => $_,
+                type        => 'file',
+            };
+
+            next;
         }
-        elsif ( -d $e and -r $e and -x $e and $e =~ m|([\w_-]+)$| ) {
-            $tree{$1} = content_tree($e);
-            delete $tree{$1} unless keys %{ $tree{$1} };
-        }
 
+        #content directory
+        if ( /([\w_-]+)$/ and -d and -r and -x ) {
+            ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
+
+            my $content = content_tree($_);
+
+            push @tree, {
+                name        => $name,
+                filename    => $_,
+                type        => 'dir',
+                content     => @$content ? $content : undef,
+            };
+
+            next;
+        }
     }
 
-    return \%tree;
+    return \@tree;
 }
 
-# gimmeh dem stash and dem content_tree, k?
-app->renderer->add_helper(
-    stash           => sub { shift->stash(@_) },
-    content_tree    => sub { content_tree },
-);
+# return the resource data hash according to the given names list.
+# if in list context, it returns also a content_tree with 'active' marks
+# the index resource if the target is a dir and an index exists
+# undef if not found
+sub active_content {
+    my @names           = @_;
+    my $content_tree    = content_tree;
+    my $content         = $content_tree;
+    my $entry;
 
-# k, now gimmeh utf-8 pls
+    foreach my $name ( @names ) {
+        $entry = first { $_->{name} eq $name } @$content;
+        return unless $entry;
+
+        $entry->{active} = 1;
+
+        if ( $entry->{type} eq 'dir' ) {
+            $content = $entry->{content};
+        }
+        else { last }
+    }
+
+    return $entry, $content_tree if wantarray;
+    return $entry;
+}
+
+# k, now gimmeh dem stash and dem utf-8 pls
+app->renderer->add_helper( stash => sub { shift->stash(@_) } );
 app->types->type( html => 'text/html; charset=utf-8' );
-
 #kthx
 
 # serve static content
 app->static->root( app->home->rel_dir('public') )
     if -d app->home->rel_dir('public');
 
+# generate a 404 error with navigatable content_tree
+sub not_found {
+    shift->render(
+        template        => 'not_found',
+        format          => 'html',
+        status          => 404,
+        content_tree    => content_tree(),
+    );
+}
+
 # serve managed content
 get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
-    my $self        = shift;
-    my @dirs        = split m|/| => $self->stash('path');
-    my $dir_key     = join '}{' => @dirs;
+    my $self    = shift;
+    my @names   = split m|/| => $self->stash('path');
+    my ( $entry, $content_tree ) = active_content( @names );
 
-    # file not found!
-    unless ( eval "exists content_tree()->{$dir_key}" ) {
-        $self->render(
-            template    => 'not_found',
-            format      => 'html',
-            status      => 404,
-        );
+    # content not found
+    unless ( $entry and $entry->{type} eq 'file' ) {
+        not_found($self);
         return 1;
     }
 
-        # the eval "content_tree()->{$dir_key}" is not cool, but
-        #
-        # use List::Util qw( reduce )
-        # my $fpath = reduce {
-        #     ref $a eq 'HASH' ? $a->{$b} : content_tree()->{$a}{$b}
-        # } @dirs;
-        #
-        # is loooong and it fails in the exists part (auto-vivification).
+    my $file    = Mojo::File->new( path => $entry->{filename} );
+    my $html    = markdown( $file->slurp );
+    my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : $names[-1];
 
-    my $fpath   = eval "content_tree()->{$dir_key}";
-    my $html    = markdown( Mojo::File->new( path => $fpath )->slurp );
-    my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : $dirs[-1];
-
-    $self->render_inner( content => $html );
     $self->stash(
-        title       => $title,
-        dirs        => \@dirs,
-        template    => 'layouts/wrapper',
+        title           => $title,
+        content_tree    => $content_tree,
+        template        => 'layouts/wrapper',
     );
+    $self->render_inner( content => $html );
 
 } => 'content';
 
 # serve managed directories
-get '/(*path)/$' => [ path => qr([/\w_-]+) ] => sub {
+get '(*path)/$' => [ path => qr([/\w_-]*) ] => sub {
     my $self    = shift;
     my $path    = $self->stash('path');
-    my @dirs    = split m|/| => $path;
-    my $dir_key = join '}{' => @dirs;
+    my @names   = grep { $_ } split m|/| => $path;
+    my ( $entry, $content_tree ) = active_content( @names );
 
-    # directory not found!
-    unless ( eval "exists content_tree()->{$dir_key}"
-             and eval "ref content_tree()->{$dir_key} eq 'HASH'" ) {
-        $self->render(
-            template    => 'not_found',
-            format      => 'html',
-            status      => 404,
-        );
+    # /
+    $entry = { content => $content_tree, type => 'dir' } unless @names;
+
+    # directory not found
+    unless ( $entry and $entry->{type} eq 'dir' ) {
+        not_found($self);
         return 1;
     }
 
-    my $dir_hash = eval "content_tree()->{$dir_key}";
-
-    # index found!
-    if ( exists $dir_hash->{index} ) {
+    # index found
+    if ( my $index = first { $_->{name} eq 'index' } @{ $entry->{content} } ) {
         $self->redirect_to( "$path/index.html" );
         return 1;
     }
 
-    # no index. now what?
-    
-    # empty
-    unless ( keys %$dir_hash ) {
-        $self->render(
-            template    => 'not_found',
-            format      => 'html',
-            status      => 404,
-        );
-        return 1;
-    }
-
-    # no choice!
-    if ( keys %$dir_hash == 1 ) {
-        my $key = ( keys %$dir_hash )[0];
-        $self->redirect_to( "/$path/$key.html" );
-        return 1;
-    }
-
-    # multiple choice!
+    # no index. generate one.
     $self->stash(
-        urls        => [ map { "/$path/$_.html" } keys %$dir_hash ],
-        dirs        => \@dirs,
-        template    => 'multiple_choice',
+        path            => $path,
+        entry           => $entry,
+        content_tree    => $content_tree,
     );
 
 } => 'directory';
+
+# need this catcher to have a content_tree in not_found.html.epl
+get '(*anything)' => \&not_found;
 
 shagadelic( $ARGV[0] || 'daemon' );
 
@@ -155,40 +174,46 @@ __DATA__
 
 @@ navi.html.ep
 <div id="navi">
-% my $tree   = content_tree;
+% my $tree   = $content_tree;
 % my $prefix = '';
-% foreach my $i ( 0 .. $#$dirs ) {
-%   my $dir = $dirs->[$i];
+% while ( $tree ) {
+%   my $list = $tree;
+%   undef $tree;
+%   my $pre = $prefix;
+%   last unless @$list;
 <ul class="navi">
-%   foreach my $e ( keys %$tree ) {
-%       my $url   = "$prefix/$e";
-%       my $ext   = ref $tree->{$e} eq 'HASH' ? '/' : '.html';
-%       my $class = $e eq $dir ? ' class="here"' : '';
-    <li<%== $class %>><a href="<%= "$url$ext" %>"><%= $e %></a></li>
+%   for ( @$list ) {
+%       my $class   = $_->{active} ? ' class="active"' : '';
+%       my $ext     = $_->{type} eq 'file' ? '.html' : '/';
+    <li<%== $class %>>
+        <a href="<%== "$pre/$_->{name}$ext" %>"><%= $_->{name} %></a>
+    </li>
+%       if ( $_->{active} and $_->{type} eq 'dir' ) {
+%           $tree = $_->{content};
+%           $prefix .= "/$_->{name}";
+%       }
 %   }
 </ul>
-%   $tree   = $tree->{$dir};
-%   $prefix = "$prefix/$dir";
-%   redo if $i == $#$dirs and ref $tree eq 'HASH'; # directory view
 % }
 </div>
 
-@@ multiple_choice.html.ep
+@@ directory.html.ep
 % layout 'wrapper';
-% stash title => 'No index document found!';
+% stash title => $entry->{name} . ' - Index';
 <h1><%= stash 'title' %></h1>
-<p>Please choose one of the following documents:</p>
+% if ( @{ $entry->{content} } ) {
 <ul class="multiple_choice">
-% foreach my $url ( @$urls ) {
-    <li><a href="<%= $url %>"><%= $url %></a></li>
-% }
+%   foreach my $e ( @{ $entry->{content} } ) {
+%       if ( $e->{type} eq 'file' ) {
+    <li><a href="<%= "$e->{name}.html" %>"><%= $e->{name} %></a></li>
+%       } else {
+    <li><a href="<%= "$e->{name}/" %>"><%= $e->{name} %></a></li>
+%       }
+%   }
 </ul>
-
-@@ exception.html.ep
-% layout 'wrapper';
-% stash title => 'Exception!';
-<h1><%= stash 'title' %></h1>
-<pre class="exception"><%= $exception %></pre>
+% } else {
+<p>Here is nothing.</p>
+% }
 
 @@ not_found.html.ep
 % layout 'wrapper';
@@ -197,6 +222,11 @@ __DATA__
 <p>The resource you requested
 (<code><%= $self->req->url->to_abs %></code>)
 could not be found. Sorry!</p>
+
+@@ exception.html.ep
+<!doctype html>
+<html><head><title>Exception</title></head>
+<body><h1>Exception</h1><pre class="exception"><%= $exception %></pre></body>
 
 __END__
 

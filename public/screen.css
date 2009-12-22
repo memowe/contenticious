@@ -43,7 +43,7 @@ body {
     display         : inline;
 }
 
-#navi .navi li.here {
+#navi .navi li.active {
     font-weight     : bold;
 }
 
