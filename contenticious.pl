@@ -303,25 +303,48 @@ __END__
 
 =head1 NAME
 
-Contenticious -- simple file based "CMS" on Mojo steroids!
+contenticious - simple file based "CMS" on Mojo steroids!
 
 =head1 SYNOPSIS
 
     $ vim pages/index.md
     $ mkdir pages/section
     $ vim pages/section/foo.md
-    $ vim pages/section/bar.md
-    $ perl contenticious.pl
+    $ ./contenticious.pl daemon
 
 =head1 DESCRIPTION
 
-Contenticious is a very simple way to glue together some content to a small website. You just write Markdown files and check the generated HTML in your browser. To publish, just use the C<static> command to generate static HTML as described below.
+Contenticious is a very simple way to glue together some content to a small website. You just write Markdown files and check the generated HTML in your browser. To publish, use the C<dump> command to generate static HTML as described below.
 
 =head2 HOW TO ORGANIZE YOUR CONTENT
 
+This is the simple part. Write C<*.md> files in the C<pages> directory, they will be interpreted with Markdown (L<http://daringfireball.net/projects/markdown/>).
+
+You can organize them in directories and link to other files (replace the C<.md> with C<.html>. If you want a start page for a directory, name it C<index.md>. If no C<index.md> exists, contenticious will generate an index page for that directory. You don't have to think about navigation - contenticious will generate a navigation bar for you.
+
+If you want, you can place additional content like pictures or PDF documents in the C<public> directory. They will be served automatically.
+
+You can view the Markdown content in your browser after invoking
+
+    ./contenticious.pl daemon
+
+For additional options, C<contenticious help daemon> will be your friend.
+
 =head2 HOW TO DEPLOY
 
+This is the simple part. The command
+
+    ./contenticious dump
+
+will dump all the content to the C<static> directory, ready to upload to your web server.
+
 =head2 CUSTOMIZATION (C11N)
+
+This is the simple part. Just change the standard stylesheet in C<public>. If that's not enough customization for you, invoke the command
+
+    ./contenticious templates
+
+and all the templates are dumped to the C<templates> directory. There you can change the templates, written in ep (L<http://search.cpan.org/dist/Mojo/lib/Mojo/Template.pm>).
 
 =head1 AUTHOR AND LICENSE
 
