@@ -55,6 +55,4 @@ Author and license
 
 Copyright (c) 2009 Mirko Westermeier, <mirko@westermeier.de>
 
-Published under the MIT license. See [MIT-LICENSE][MITL].
-
-[MITL]: MIT-LICENSE
+Published under the MIT license. See MIT-LICENSE.
