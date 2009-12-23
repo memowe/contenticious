@@ -22,7 +22,7 @@ This is the simple part. Write `*.md` files in the `pages` directory, they will 
 
 [MD]: http://daringfireball.net/projects/markdown/
 
-You can organize them in directories and link to other files (replace the `.md` with `.html`. If you want a start page for a directory, name it `index.md`. If no `index.md` exists, contenticious will generate an index page for that directory. You don't have to think about navigation - contenticious will generate a navigation bar for you.
+You can organize them in directories and link to other files (replace the `.md` with `.html`. If you want a start page for a directory, name it `index.md`. If no `index.md` exists, contenticious will generate an index page for that directory. You don't have to think about navigation - contenticious will generate a navigation bar for you. To manage the sorting in the navigation, prepend digits and an underscore to your file names (`017_zoom.md` first, then `042_albundy.md`).
 
 If you want, you can place additional content like pictures or PDF documents in the `public` directory. They will be served automatically.
 
