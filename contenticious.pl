@@ -140,12 +140,16 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
 # serve managed directories
 get '(*path)/$' => [ path => qr([/\w_-]*) ] => sub {
     my $self    = shift;
-    my $path    = $self->stash('path');
+    my $path    = $self->stash('path') || '';
     my @names   = grep { $_ } split m|/| => $path;
     my ( $entry, $content_tree ) = active_content( @names );
 
     # /
-    $entry = { content => $content_tree, type => 'dir' } unless @names;
+    $entry = {
+        content     => $content_tree,
+        type        => 'dir',
+        name        => 'Index',
+    } unless @names;
 
     # directory not found
     unless ( $entry and $entry->{type} eq 'dir' ) {
@@ -270,7 +274,7 @@ __DATA__
 
 @@ directory.html.ep
 % layout 'wrapper';
-% stash title => $entry->{name} . ' - Index';
+% stash title => $entry->{name};
 <h1><%= stash 'title' %></h1>
 % if ( @{ $entry->{content} } ) {
 <ul class="multiple_choice">
