@@ -1,4 +1,4 @@
-/* Standard stylesheet for contenticious */
+/* screen stylesheet for contenticious */
 
 html, body {
     margin          : 0;
@@ -16,15 +16,17 @@ body {
     width           : 76ex;
     color           : black;
     background-color: #f0f0f8;
-    margin          : 0 auto;
-    padding         : 1em 6ex 3em;
+    margin          : 0 auto 1em;
+    padding         : 1em 6ex 4.5em;
     border          : solid #99a;
-    border-width    : 0 thick;
+    border-width    : 0 thick thick;
 }
 
 #navi {
     padding-top     : 1em;
-    padding-bottom  : 1em;
+    padding-bottom  : 0;
+    border-bottom   : none;
+    margin-bottom   : 0;
 }
 
 #navi a { text-decoration: none }
@@ -50,7 +52,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family     : 'Trebuchet MS', sans-serif;
     font-weight     : bold;
-    margin          : 1.5em 0 .66em;
+    margin          : 1.5em 0 1em;
     padding         : 1em 0 0;
     border-top      : medium solid #d0d0e0;
 }

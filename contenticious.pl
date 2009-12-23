@@ -237,6 +237,7 @@ __DATA__
     <title><%= $title || 'contenticious!' %></title>
 </head>
 <link rel="stylesheet" type="text/css" href="/screen.css" media="screen">
+<link rel="stylesheet" type="text/css" href="/print.css" media="print">
 <body>
 %== include 'navi';
 <div id="content">
