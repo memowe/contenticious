@@ -3,7 +3,7 @@
 BEGIN { use FindBin; use lib "$FindBin::Bin/mojo/lib" }
 
 use Mojolicious::Lite;
-use Mojo::File;
+use Mojo::Asset::File;
 use Mojo::Command;
 use Text::Markdown qw( markdown );
 use List::Util qw( first );
@@ -124,7 +124,7 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
         return 1;
     }
 
-    my $file    = Mojo::File->new( path => $entry->{filename} );
+    my $file    = Mojo::Asset::File->new( path => $entry->{filename} );
     my $html    = markdown( $file->slurp );
     my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : $names[-1];
 
