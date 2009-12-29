@@ -18,11 +18,17 @@ Contenticious is a very simple way to glue together some content to a small webs
 
 ### How to organize your content
 
-This is the simple part. Write `*.md` files in the `pages` directory, they will be interpreted with [Markdown][MD].
+This is the simple part.
+
+#### Basic content management
+
+Write `*.md` files in the `pages` directory, they will be interpreted with [Markdown][MD].
 
 [MD]: http://daringfireball.net/projects/markdown/
 
-You can organize them in directories and link to other files (replace the `.md` with `.html`. If you want a start page for a directory, name it `index.md`. If no `index.md` exists, contenticious will generate an index page for that directory. You don't have to think about navigation - contenticious will generate a navigation bar for you. To manage the sorting in the navigation, prepend digits and an underscore to your file names (`017_zoom.md` first, then `042_albundy.md`).
+You can organize them in directories and link to other files (replace the `.md` with `.html`. If you want a start page for a directory, name it `index.md`. If no `index.md` exists, contenticious will generate an index page for that directory.
+
+You don't have to think about navigation - contenticious will generate a navigation bar for you.
 
 If you want, you can place additional content like pictures or PDF documents in the `public` directory. They will be served automatically.
 
@@ -31,6 +37,16 @@ You can view the Markdown content in your browser after invoking
     ./contenticious.pl daemon
 
 For additional options, `contenticious help daemon` will be your friend.
+
+#### Advanced content-fu
+
+To manage the sorting in the navigation, prepend digits and an underscore to your file names (`017_zoom.md` first, then `042_albundy.md`).
+
+If you want a different name for your page in the navigation, provide the navi metadata `navi` by prepending the following line to the markdown file:
+
+    navi: the SpEcIaL nåm€ øf ≤this≥ page
+
+For a special page title, provide a `title` metadata line in the same manner.
 
 ### How to deploy
 

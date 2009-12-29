@@ -1,3 +1,6 @@
+Title: Welcome to contenticious - a simple file based "CMS" on Mojo steroids!
+Navi: home
+
 Welcome to contenticious
 ========================
 

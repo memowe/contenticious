@@ -75,9 +75,9 @@ h1 {
 
 h2 { font-size: 1.5em }
 h3 { font-size: 1.2em }
-h4 { font-size: 1em  }
-h5 { font-size: 1em; border: none }
-h6 { font-size: 1em; border: none; color: #666 }
+h4 { font-size: 1em; border: none }
+h5 { font-size: 1em; border: none; color: #666 }
+h6 { font-size: .8em; border: none; color: #777 }
 
 p, ul, ol, pre {
     margin          : .8em 0;

@@ -21,10 +21,18 @@ sub content_tree {
         if ( /([\w_-]+)\.md$/ and -f and -r ) {
             ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
 
+            my $file    = Mojo::Asset::File->new( path => $_ );
+            my $content = $file->slurp;
+            my %meta    = ();
+            $meta{lc $1} = $2 while $content =~ s/\A(\w+):\s*(.*)[\n\r]+//;
+
             push @tree, {
                 name        => $name,
                 filename    => $_,
                 type        => 'file',
+                meta        => \%meta,
+                content     => $content,
+                html        => markdown( $content ),
             };
 
             next;
@@ -124,16 +132,16 @@ get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
         return 1;
     }
 
-    my $file    = Mojo::Asset::File->new( path => $entry->{filename} );
-    my $html    = markdown( $file->slurp );
-    my $title   = $html =~ m|<h1>(.*?)</h1>| ? $1 : $names[-1];
+    my $title = defined $entry->{meta}{title} ? $entry->{meta}{title}
+                : $entry->{html} =~ m|<h1>(.*?)</h1>| ? $1
+                : $names[-1];
 
     $self->stash(
         title           => $title,
         content_tree    => $content_tree,
         template        => 'layouts/wrapper',
     );
-    $self->render_inner( content => $html );
+    $self->render_inner( content => $entry->{html} );
 
 } => 'content';
 
@@ -261,8 +269,9 @@ __DATA__
 %   for ( @$list ) {
 %       my $class   = $_->{active} ? ' class="active"' : '';
 %       my $ext     = $_->{type} eq 'file' ? '.html' : '/';
+%       my $name    = $_->{meta}{navi} ? $_->{meta}{navi} : $_->{name};
     <li<%== $class %>>
-        <a href="<%== "$pre/$_->{name}$ext" %>"><%= $_->{name} %></a>
+        <a href="<%== "$pre/$_->{name}$ext" %>"><%= $name %></a>
     </li>
 %       if ( $_->{active} and $_->{type} eq 'dir' ) {
 %           $tree = $_->{content};
