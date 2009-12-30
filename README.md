@@ -48,6 +48,8 @@ If you want a different name for your page in the navigation, provide the navi m
 
 For a special page title, provide a `title` metadata line in the same manner.
 
+You can also set a directory's navigation name with a `navi: ...` line as above in a file named `meta` in that directory.
+
 ### How to deploy
 
 This is the simple part. The command

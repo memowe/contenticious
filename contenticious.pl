@@ -42,12 +42,20 @@ sub content_tree {
         if ( /([\w_-]+)$/ and -d and -r and -x ) {
             ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
 
+            my %meta    = ();
+            my $metafn  = "$_/meta";
+            if ( -f $metafn and -r $metafn ) {
+                my $mfc = Mojo::Asset::File->new( path => $metafn )->slurp;
+                $meta{lc $1} = $2 while $mfc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
+            }
+
             my $content = content_tree($_);
 
             push @tree, {
                 name        => $name,
                 filename    => $_,
                 type        => 'dir',
+                meta        => \%meta,
                 content     => @$content ? $content : undef,
             };
 
