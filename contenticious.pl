@@ -268,12 +268,13 @@ __DATA__
 <div id="navi">
 % my $tree   = $content_tree;
 % my $prefix = '';
+% my $level = 0;
 % while ( $tree ) {
 %   my $list = $tree;
 %   undef $tree;
 %   my $pre = $prefix;
 %   last unless @$list;
-<ul class="navi">
+<ul class="navi navilevel<%= $level %>">
 %   for ( @$list ) {
 %       my $class   = $_->{active} ? ' class="active"' : '';
 %       my $ext     = $_->{type} eq 'file' ? '.html' : '/';
@@ -287,6 +288,7 @@ __DATA__
 %       }
 %   }
 </ul>
+%   $level++;
 % }
 </div>
 
