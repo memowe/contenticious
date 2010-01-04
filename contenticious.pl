@@ -3,7 +3,6 @@
 BEGIN { use FindBin; use lib "$FindBin::Bin/mojo/lib" }
 
 use Mojolicious::Lite;
-use Mojo::Asset::File;
 use Mojo::Command;
 use Text::Markdown qw( markdown );
 use List::Util qw( first );
@@ -21,8 +20,7 @@ sub content_tree {
         if ( /([\w_-]+)\.md$/ and -f and -r ) {
             ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
 
-            my $file    = Mojo::Asset::File->new( path => $_ );
-            my $content = $file->slurp;
+            my $content = slurp_file($_);
             my %meta    = ();
             $meta{lc $1} = $2 while $content =~ s/\A(\w+):\s*(.*)[\n\r]+//;
 
@@ -45,7 +43,7 @@ sub content_tree {
             my %meta    = ();
             my $metafn  = "$_/meta";
             if ( -f $metafn and -r $metafn ) {
-                my $mfc = Mojo::Asset::File->new( path => $metafn )->slurp;
+                my $mfc = slurp_file($metafn);
                 $meta{lc $1} = $2 while $mfc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
             }
 
@@ -107,6 +105,21 @@ sub walk_content_tree {
         walk_content_tree( $sub, $data->{content}, "$prefix/$data->{name}" )
             if $data->{type} eq 'dir' and defined $data->{content};
     }
+}
+
+# read and return the whole file content at once
+sub slurp_file {
+    my ( $path ) = @_;
+
+    my $content;
+    unless (open CONTENT, '<:utf8', $path) {
+        app->log->error("Can't open $path: $!");
+        return;
+    }
+    sysread CONTENT, $content, -s CONTENT;
+    close CONTENT;
+
+    return $content
 }
 
 # k, now gimmeh dem stash and dem utf-8 pls
