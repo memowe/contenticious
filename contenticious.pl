@@ -292,6 +292,7 @@ __DATA__
 %   last unless @$list;
 <ul class="navi navilevel<%= $level %>">
 %   for ( @$list ) {
+%       next if $_->{name} eq 'index' and $_->{type} eq 'file' and $level;
 %       my $class   = $_->{active} ? ' class="active"' : '';
 %       my $ext     = $_->{type} eq 'file' ? '.html' : '/';
 %       my $name    = $_->{meta}{navi} ? $_->{meta}{navi} : $_->{name};
