@@ -77,7 +77,9 @@ sub active_content {
     my $content         = $content_tree;
     my $entry;
 
+    my $prev_entry;
     foreach my $name ( @names ) {
+        $prev_entry = $entry;
         $entry = first { $_->{name} eq $name } @$content;
         return unless $entry;
 
@@ -88,6 +90,12 @@ sub active_content {
         }
         else { last }
     }
+
+    $entry->{current} = 1;
+    $prev_entry->{current} = 1
+        if  $prev_entry
+        and $entry->{name} eq 'index'
+        and $entry->{type} eq 'file';
 
     return $entry, $content_tree if wantarray;
     return $entry;
@@ -298,7 +306,9 @@ __DATA__
 %       my $ext     = $_->{type} eq 'file' ? '.html' : '/';
 %       my $name    = $_->{meta}{navi} ? $_->{meta}{navi} : $_->{name};
     <li<%== $class %>>
-        <a href="<%== "$pre/$_->{name}$ext" %>"><%= $name %></a>
+        <%== qq[<a href="$pre/$_->{name}$ext">] unless $_->{current} %>
+        <%= $name =%>
+        <%== '</a>' unless $_->{current} %>
     </li>
 %       if ( $_->{active} and $_->{type} eq 'dir' ) {
 %           $tree = $_->{content};
