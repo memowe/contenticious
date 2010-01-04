@@ -40,20 +40,23 @@ sub content_tree {
         if ( /([\w_-]+)$/ and -d and -r and -x ) {
             ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
 
-            my %meta    = ();
+            my $content = content_tree($_);
+
+            my $meta    = {};
             my $metafn  = "$_/meta";
             if ( -f $metafn and -r $metafn ) {
                 my $mfc = slurp_file($metafn);
-                $meta{lc $1} = $2 while $mfc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
+                $meta->{lc $1} = $2 while $mfc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
+            } else {
+                my $index = first { $_->{name} eq 'index' } @$content;
+                $meta = $index->{meta} if $index;
             }
-
-            my $content = content_tree($_);
 
             push @tree, {
                 name        => $name,
                 filename    => $_,
                 type        => 'dir',
-                meta        => \%meta,
+                meta        => $meta,
                 content     => @$content ? $content : undef,
             };
 
