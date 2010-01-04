@@ -36,7 +36,7 @@ You can view the Markdown content in your browser after invoking
 
     ./contenticious.pl daemon
 
-For additional options, `contenticious help daemon` will be your friend.
+For additional options, `contenticious.pl help daemon` will be your friend.
 
 #### Advanced content-fu
 
@@ -54,7 +54,7 @@ You can also set a directory's navigation name with a `navi: ...` line as above 
 
 This is the simple part. The command
 
-    ./contenticious dump
+    ./contenticious.pl dump
 
 will dump all the content to the `static` directory, ready to upload to your web server.
 
@@ -62,7 +62,7 @@ will dump all the content to the `static` directory, ready to upload to your web
 
 This is the simple part. Just change the standard stylesheet in `public`. If that's not enough c11n for you, invoke the command
 
-    ./contenticious templates
+    ./contenticious.pl templates
 
 and all the templates are dumped to the `templates` directory. There you can change the templates, written in [ep][ep].
 
