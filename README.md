@@ -70,6 +70,11 @@ and all the templates are dumped to the `templates` directory. There you can cha
 
 [ep]: http://search.cpan.org/dist/Mojo/lib/Mojo/Template.pm
 
+Bugs and Caveats
+----------------
+
+At this time, it's impossible by design to use a file and a directory with the same name, like `foo/*` and `foo.md`. Please use `foo/*` and `foo/index.md` instead. If you have a really good reason to use the first case, please let me know.
+
 Authors and license
 -------------------
 
