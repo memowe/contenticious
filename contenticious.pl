@@ -88,7 +88,6 @@ sub active_content {
         if ( $entry->{type} eq 'dir' ) {
             $content = $entry->{content};
         }
-        else { last }
     }
 
     $entry->{current} = 1;
