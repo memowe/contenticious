@@ -70,9 +70,15 @@ and all the templates are dumped to the `templates` directory. There you can cha
 
 [ep]: http://search.cpan.org/dist/Mojo/lib/Mojo/Template.pm
 
-Author and license
-------------------
+Authors and license
+-------------------
 
 Copyright (c) 2009 Mirko Westermeier, <mirko@westermeier.de>
+
+Credits:
+
+- Maxim Vuets, <maxim.vuets@gmail.com>
+
+Thank you for your contributions!
 
 Published under the MIT license. See MIT-LICENSE.

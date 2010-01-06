@@ -76,8 +76,8 @@ sub active_content {
     my $content_tree    = content_tree;
     my $content         = $content_tree;
     my $entry;
-
     my $prev_entry;
+
     foreach my $name ( @names ) {
         $prev_entry = $entry;
         $entry = first { $_->{name} eq $name } @$content;
@@ -92,6 +92,7 @@ sub active_content {
     }
 
     $entry->{current} = 1;
+
     $prev_entry->{current} = 1
         if  $prev_entry
         and $entry->{name} eq 'index'
@@ -123,12 +124,13 @@ sub slurp_file {
     my ( $path ) = @_;
 
     my $content;
-    unless (open CONTENT, '<:utf8', $path) {
+    my $content_fh;
+    unless (open $content_fh, '<:utf8', $path) {
         app->log->error("Can't open $path: $!");
         return;
     }
-    sysread CONTENT, $content, -s CONTENT;
-    close CONTENT;
+    sysread $content_fh, $content, -s $content_fh;
+    close $content_fh;
 
     return $content
 }
