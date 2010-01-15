@@ -265,7 +265,7 @@ if ( my $command = $ARGV[0] ) {
     }
 }
 
-shagadelic( $ARGV[0] || 'daemon' );
+shagadelic( @ARGV ? @ARGV : 'daemon' );
 
 __DATA__
 
