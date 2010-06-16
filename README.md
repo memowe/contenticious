@@ -1,3 +1,12 @@
+DEPRECATED!
+===========
+
+This is contenticious and it's cool, but you can do the same with much more
+flexibility with [Mojolicious::Plugin::ContentManagement][MPCM], so you may
+want to look at it instead.
+
+[MPCM]: http://github.com/memowe/mojolicious-plugin-content_management
+
 contenticious
 =============
 
