@@ -1,0 +1,128 @@
+html, body {
+    margin          : 0;
+    padding         : 0;
+    color           : black;
+    background-color: #eee;
+    font-family     : 'Helvetica', sans-serif;
+}
+
+* { line-height: 150% }
+
+p { margin: .66em 0; padding: 0 }
+
+strong { font-weight: bold }
+
+em { font-style: italic }
+
+#top {
+    background-color: #222;
+    color           : #ddd;
+    margin          : 0;
+    padding         : 1em 5ex;
+    border-bottom   : medium solid #999;
+}
+
+#top #inner {
+    width           : 100ex;
+    margin          : 0 auto;
+    padding         : 0;
+}
+
+#top #name a {
+    font-size       : 1.8em;
+    color           : white;
+    text-decoration : none;
+}
+
+#top #navi, #top #subnavi, #top #subsubnavi {
+    margin          : .5em 0 0;
+    padding         : 0;
+}
+
+#top #navi { font-size: 1.2em }
+#top #subnavi { font-weight: bold }
+
+#top #navi li, #top #subnavi li, #top #subsubnavi li {
+    display         : inline;
+    margin          : 0;
+    padding         : .2em 1ex;
+    border-radius   : .5em;
+}
+
+#top #navi li:first-child, #top #subnavi li:first-child,
+#top #subsubnavi li:first-child { margin-left: -1ex }
+
+#top #navi li.active, #top #subnavi li.active, #top #subsubnavi li.active {
+    background-color: #444;
+}
+
+#top #navi a, #top #subnavi a, #top #subsubnavi a {
+    text-decoration : none;
+    color           : inherit;
+}
+
+#top #navi a:hover, #top #navi a:active,
+#top #subnavi a:hover, #top #subnavi a:active,
+#top #subsubnavi a:hover, #top #subsubnavi a:active { color: white }
+
+#content {
+    width           : 90ex;
+    margin          : 0 auto;
+    padding         : 2em 7ex 3em;
+    color           : #333;
+    background-color: #f8f8f8;
+    border          : solid #ddd;
+    border-width    : 0 thin thin;
+}
+
+#content h1, #content h2, #content h3 {
+    font-weight     : bold;
+    margin          : 2em 0 1em;
+    padding         : 0;
+}
+
+#content h1 { font-size: 2em; font-weight: normal; margin-top: .5em }
+
+#content h2 { font-size: 1.5em }
+
+#content h3 { font-size: 1.2em }
+
+#content a {
+    text-decoration : underline;
+    color           : #039;
+}
+
+#content a:visited { color: #333 }
+
+pre {
+    margin          : 1em 0;
+    padding         : .5em;
+    border          : thin solid #ddd;
+}
+
+pre, code {
+    font-family     : monospace;
+    color           : #333;
+    background-color: white;
+}
+
+#footer {
+    margin          : 2em;
+    padding         : 0 7ex;
+    color           : #777;
+    font-size       : .8em;
+    text-align      : center;
+    text-shadow     : 1px 1px 0 white;
+}
+
+#built_with {
+    font-size       : .9em;
+    color           : #999;
+}
+
+#built_with a {
+    text-decoration : none;
+    color           : #888;
+}
+
+#built_with a:hover, #built_with a:active { text-decoration: underline }

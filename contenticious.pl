@@ -1,353 +1,169 @@
 #!/usr/bin/env perl
 
-BEGIN { use FindBin; use lib "$FindBin::Bin/mojo/lib" }
-
 use Mojolicious::Lite;
-use Mojo::Command;
-use Text::Markdown qw( markdown );
-use List::Util qw( first );
-use File::Copy::Recursive qw( dircopy );
+use File::Copy::Recursive 'dircopy';
+use lib app->home->rel_dir('lib'); # FindBin doesn't work with morbo
 
-# build the content tree as a LoHoLoH...
-# realized as a sub to get changed content immediately
-sub content_tree {
-    my $dirname = shift || app->home->rel_dir('pages');
-    my @tree    = ();
+# configuration with good defaults
+my $config_file = $ENV{CONTENTICIOUS_CONFIG} // app->home->rel_file('config');
+my $config      = plugin Config => {file => $config_file};
 
-    for ( sort glob("$dirname/*") ) {
+# prepare contenticious
+my $cont = plugin Contenticious => { pages_dir => $config->{pages_dir} };
 
-        # content file
-        if ( /([\w_-]+)\.md$/ and -f and -r ) {
-            ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
+plugin Charset => {charset => 'utf-8'};
 
-            my $content = slurp_file($_);
-            my %meta    = ();
-            $meta{lc $1} = $2 while $content =~ s/\A(\w+):\s*(.*)[\n\r]+//;
+# serve content
+get '/*cpath' => {cpath => ''} => sub {
+    my $self = shift;
+    my $path = $self->param('cpath');
+    
+    # delete format
+    $path =~ s/\.html$//;
+    $self->stash->{cpath} =~ s/\.html$//;
 
-            push @tree, {
-                name        => $name,
-                filename    => $_,
-                type        => 'file',
-                meta        => \%meta,
-                content     => $content,
-                html        => markdown( $content ),
-            };
+    # found matching content node?
+    my $content_node = $self->contenticious->find($path);
+    $self->render_not_found and return unless defined $content_node;
+    $self->stash(content_node => $content_node);
 
-            next;
-        }
-
-        #content directory
-        if ( /([\w_-]+)$/ and -d and -r and -x ) {
-            ( my $name = $1 ) =~ s/^(\d+_)?//; # drop sort prefix
-
-            my $content = content_tree($_);
-
-            my $meta    = {};
-            my $metafn  = "$_/meta";
-            if ( -f $metafn and -r $metafn ) {
-                my $mfc = slurp_file($metafn);
-                $meta->{lc $1} = $2 while $mfc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
-            } else {
-                my $index = first { $_->{name} eq 'index' } @$content;
-                $meta = $index->{meta} if $index;
-            }
-
-            push @tree, {
-                name        => $name,
-                filename    => $_,
-                type        => 'dir',
-                meta        => $meta,
-                content     => @$content ? $content : undef,
-            };
-
-            next;
-        }
-    }
-
-    return \@tree;
-}
-
-# return the resource data hash according to the given names list.
-# if in list context, it returns also a content_tree with 'active' marks
-# the index resource if the target is a dir and an index exists
-# undef if not found
-sub active_content {
-    my @names           = @_;
-    my $content_tree    = content_tree;
-    my $content         = $content_tree;
-    my $entry;
-    my $prev_entry;
-
-    foreach my $name ( @names ) {
-        $prev_entry = $entry;
-        $entry = first { $_->{name} eq $name } @$content;
-        return unless $entry;
-
-        $entry->{active} = 1;
-
-        if ( $entry->{type} eq 'dir' ) {
-            $content = $entry->{content};
-        }
-    }
-
-    $entry->{current} = 1;
-
-    $prev_entry->{current} = 1
-        if  $prev_entry
-        and $entry->{name} eq 'index'
-        and $entry->{type} eq 'file';
-
-    return $entry, $content_tree if wantarray;
-    return $entry;
-}
-
-# traverse the content_tree and execute a given sub on each data hash
-# this sub gets the data hash and also a path to that data like foo/bar/baz
-sub walk_content_tree {
-    my ( $sub, $tree, $prefix ) = @_;
-    $tree   ||= content_tree;
-    $prefix ||= '';
-
-    foreach my $data ( @$tree ) {
-
-        my $ext = $data->{type} eq 'dir' ? '/' : '.html';
-        $sub->( $data, "$prefix/$data->{name}$ext" );
-
-        walk_content_tree( $sub, $data->{content}, "$prefix/$data->{name}" )
-            if $data->{type} eq 'dir' and defined $data->{content};
-    }
-}
-
-# read and return the whole file content at once
-sub slurp_file {
-    my ( $path ) = @_;
-
-    my $content;
-    my $content_fh;
-    unless (open $content_fh, '<:utf8', $path) {
-        app->log->error("Can't open $path: $!");
-        return;
-    }
-    sysread $content_fh, $content, -s $content_fh;
-    close $content_fh;
-
-    return $content
-}
-
-# k, now gimmeh dem stash and dem utf-8 pls
-app->renderer->add_helper( stash => sub { shift->stash(@_) } );
-app->types->type( html => 'text/html; charset=utf-8' );
-#kthx
-
-# serve static content
-app->static->root( app->home->rel_dir('public') )
-    if -d app->home->rel_dir('public');
-
-# generate a 404 error with navigatable content_tree
-sub not_found {
-    shift->render(
-        template        => 'not_found',
-        format          => 'html',
-        status          => 404,
-        content_tree    => content_tree(),
-    );
-}
-
-# serve managed content
-get '/(*path).html' => [ path => qr([/\w_-]+) ] => sub {
-    my $self    = shift;
-    my @names   = split m|/| => $self->stash('path');
-    my ( $entry, $content_tree ) = active_content( @names );
-
-    # content not found
-    unless ( $entry and $entry->{type} eq 'file' ) {
-        not_found($self);
-        return 1;
-    }
-
-    my $title = defined $entry->{meta}{title} ? $entry->{meta}{title}
-                : $entry->{html} =~ m|<h1>(.*?)</h1>| ? $1
-                : $names[-1];
-
-    $self->stash(
-        title           => $title,
-        content_tree    => $content_tree,
-        template        => 'layouts/wrapper',
-    );
-    $self->render_inner( content => $entry->{html} );
-
+    # empty cache?
+    $self->contenticious->empty_cache unless $self->config('cached');
 } => 'content';
 
-# serve managed directories
-get '(*path)/$' => [ path => qr([/\w_-]*) ] => sub {
-    my $self    = shift;
-    my $path    = $self->stash('path') || '';
-    my @names   = grep { $_ } split m|/| => $path;
-    my ( $entry, $content_tree ) = active_content( @names );
+# dump command
+my $command = $ARGV[0];
+if (defined $command and $command eq 'dump') {
 
-    # /
-    $entry = {
-        content     => $content_tree,
-        type        => 'dir',
-        name        => 'Index',
-    } unless @names;
+    # prepare directory
+    my $dd = $config->{dump_dir} // app->home->rel_dir('dump');
+    mkdir $dd unless -d $dd;
 
-    # directory not found
-    unless ( $entry and $entry->{type} eq 'dir' ) {
-        not_found($self);
-        return 1;
-    }
+    say 'dumping everything to ' . $dd . ' ...';
 
-    # index found
-    if ( my $index = first { $_->{name} eq 'index' } @{ $entry->{content} } ) {
-        $self->redirect_to( "$path/index.html" );
-        return 1;
-    }
+    # copy static directoy content
+    dircopy(app->static->root, $dd);
 
-    # no index. generate one.
-    $self->stash(
-        path            => $path,
-        entry           => $entry,
-        content_tree    => $content_tree,
-    );
+    # dump content
+    $cont->for_all_nodes(sub {
+        my $node = shift;
 
-} => 'directory';
+        # skip all index nodes (content from parent node)
+        return if $node->name eq 'index';
 
-# need this catcher to have a content_tree in not_found.html.epl
-get '(*anything)' => \&not_found;
+        # determine dump file path
+        my $path = $node->is_root ? 'index' : $node->path;
+        my $df   = "$dd/$path.html";
 
-# command line commands
-if ( my $command = $ARGV[0] ) {
+        # create directory if needed
+        mkdir "$dd/$path"
+            if  not $node->is_root
+                and $node->can('children') and @{$node->children}
+                and not -d "$dd/$path";
 
-    my $cmd = Mojo::Command->new;
+        # prepare subdispatch
+        my $tx  = app->build_tx;
+        my $url = app->url_for('content', cpath => $node->path);
+        $tx->req->url($url)->method('GET');
 
-    # extract the inline templates into 'templates'
-    if ( $command eq 'templates' ) {
+        # subdispatch
+        app->handler($tx);
+        my $html = $tx->res->body;
 
-        $cmd->create_rel_dir('templates');
-        my @names = qw( layouts/wrapper navi directory not_found exception );
+        # dump to file
+        open my $fh, '>', $df or die "couldn't open file $df: $!";
+        print $fh $html;
+    });
 
-        foreach my $template ( @names ) {
-            my $data = $cmd->get_data( "$template.html.ep", 'main' );
-            $cmd->write_rel_file( "templates/$template.html.ep", $data );
-        }
-
-        exit 0;
-    }
-    
-    # generate static html in 'static' from the pages
-    if ( $command eq 'dump' ) {
-
-        my $client = app->client->app(app); # D'oh
-        app->log->level('error');
-
-        walk_content_tree( sub {
-            my ( $data, $path ) = @_;
-
-            $client->get( $path => sub {
-                my ( $self, $tx ) = @_;
-                my $filename = "static$path";
-
-                # no index.html found
-                $filename .= 'index.html' unless $path =~ /\.html$/;
-
-                $cmd->write_rel_file( $filename, $tx->res->body );
-            });
-        });
-
-        $client->process();
-
-        # now get the static stuff from public
-        dircopy( 'public', 'static' );
-        print "Files from 'public' copied\n";
-
-        exit 0;
-    }
+    say 'done!';
 }
 
-shagadelic( @ARGV ? @ARGV : 'daemon' );
+# web app
+else { app->start }
 
 __DATA__
 
-@@ layouts/wrapper.html.ep
-<!doctype html>
+@@ content.html.ep
+% layout 'contenticious', title => $content_node->title;
+% if (defined $content_node->html) {
+%= b($content_node->html)
+% } else {
+%= include 'list', content_node => $content_node
+% }
 
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <title><%= $title || 'contenticious!' %></title>
-</head>
-<link rel="stylesheet" type="text/css" href="/screen.css" media="screen">
-<link rel="stylesheet" type="text/css" href="/print.css" media="print">
-<body>
-%== include 'navi';
-<div id="content">
-
-%== content
-
-</div>
-</body>
-</html>
+@@ list.html.ep
+% my $level =()= $self->req->url->path =~ m|/|g;
+<h1><%= $content_node->title %></h1>
+<ul id="content_list">
+% foreach my $c (@{$content_node->children}) {
+    % my $rel_url = '../' x ($level - 1) . $c->path . '.html';
+    <li><a href="<%= $rel_url %>"><strong><%= $c->title %></strong></a></li>
+% }
+</ul>
 
 @@ navi.html.ep
-<div id="navi">
-% my $tree   = $content_tree;
-% my $prefix = '';
-% my $level = 0;
-% while ( $tree ) {
-%   my $list = $tree;
-%   undef $tree;
-%   my $pre = $prefix;
-%   last unless @$list;
-<ul class="navi navilevel<%= $level %>">
-%   for ( @$list ) {
-%       next if $_->{name} eq 'index' and $_->{type} eq 'file' and $level;
-%       next if $_->{meta}{navihide};
-%       my $class   = $_->{active} ? ' class="active"' : '';
-%       my $ext     = $_->{type} eq 'file' ? '.html' : '/';
-%       my $name    = $_->{meta}{navi} ? $_->{meta}{navi} : $_->{name};
-    <li<%== $class %>>
-        <%== qq[<a href="$pre/$_->{name}$ext">] unless $_->{current} %>
-        <%= $name =%>
-        <%== '</a>' unless $_->{current} %>
-    </li>
-%       if ( $_->{active} and $_->{type} eq 'dir' ) {
-%           $tree = $_->{content};
-%           $prefix .= "/$_->{name}";
-%       }
-%   }
-</ul>
-%   $level++;
-% }
-</div>
-
-@@ directory.html.ep
-% layout 'wrapper';
-% stash title => $entry->{name};
-<h1><%= stash 'title' %></h1>
-% if ( @{ $entry->{content} } ) {
-<ul class="multiple_choice">
-%   foreach my $e ( @{ $entry->{content} } ) {
-%       if ( $e->{type} eq 'file' ) {
-    <li><a href="<%= "$e->{name}.html" %>"><%= $e->{name} %></a></li>
-%       } else {
-    <li><a href="<%= "$e->{name}/" %>"><%= $e->{name} %></a></li>
-%       }
-%   }
-</ul>
-% } else {
-<p>Here is nothing.</p>
-% }
+% my $level  =()= $self->req->url->path =~ m|/|g;
+% my $node      = contenticious->root_node;
+% my @names     = split m|/| => $cpath;
+% my $prefix    = '';
+% LOOP: { do { # perldoc perlsyn: do-while isn't a loop
+    % last unless $node->can('children');
+    % my $name = shift(@names) // '';
+    <ul id="<%= $prefix %>navi">
+    % foreach my $c (@{$node->children}) {
+        % next if $c->name eq 'index';
+        % my $class   = $c->name eq $name ? 'active' : '';
+        % my $rel_url = '../' x ($level - 1) . $c->path . '.html';
+        <li class="<%= $class %>">
+            <a href="<%= $rel_url %>"><%= $c->navi_name %></a>
+        </li>
+    % }
+    </ul>
+    % $node = $node->find($name) or last;
+    % $prefix .= 'sub';
+% } while 1 }
 
 @@ not_found.html.ep
-% layout 'wrapper';
-% stash title => 'Error 404: Resource not found!';
-<h1><%= stash 'title' %></h1>
-<p>The resource you requested
-(<code><%= $self->req->url->to_abs %></code>)
-could not be found. Sorry!</p>
+% my $url = $self->req->url;
+% layout 'contenticious', title => 'File not found!';
+<h1>File not found!</h1>
+<p>I'm sorry, but I couldn't find what you were looking for:</p>
+<p><strong><%= $url %></strong></p>
 
-@@ exception.html.ep
+@@ layouts/contenticious.html.ep
+% my $level =()= $self->req->url->path =~ m|/|g;
 <!doctype html>
-<html><head><title>Exception</title></head>
-<body><h1>Exception</h1><pre class="exception"><%= $exception %></pre></body>
+<html>
+<head>
+    % my $t = join ' - ' => grep { $_ } stash('title'), config('name');
+    <title><%= $t || 'contenticious!' %></title>
+    <%= stylesheet '../' x ($level - 1) . 'styles.css' %>
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="<%= ('../' x ($level - 1)) || './' %>">
+            <%= config('name') // 'contenticious!' %>
+        </a></p>
+%= include 'navi'
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="content">
+%= content
+</div><!-- content -->
+<div id="footer">
+    % if (config 'copyright') {
+    <p id="copyright">
+        &copy;
+        <%= 1900 + (localtime)[5] %>
+        <%= config 'copyright' %>
+    </p>
+    % }
+    <p id="built_with">
+        built with
+        <a href="http://github.com/memowe/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

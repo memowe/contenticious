@@ -1,84 +1,171 @@
 contenticious
 =============
 
-A simple file based "CMS" on Mojo steroids!
+**Contenticious is a very simple way to build a nice little website from your content**.
 
-Synopsis
---------
+You just write [Markdown][mado] files in a directory structure and check the generated HTML live in your browser. The presentation is highly customizable on many levels, but I think the default is readable and rather pretty.
 
-    $ vim pages/index.md
-    $ mkdir pages/section
-    $ vim pages/section/foo.md
-    $ ./contenticious.pl daemon
+Contenticious can "be" a web server for your content, but you can dump everything to static files with a single command and upload it to your favourite web hoster.
 
-Description
------------
+[mado]: http://daringfireball.net/projects/markdown/
 
-Contenticious is a very simple way to glue together some content to a small website. You just write Markdown files and check the generated HTML in your browser. To publish, use the `dump` command to generate static HTML as described below.
+How to get it
+-------------
 
-### How to organize your content
+Contenticious is built on top of [Mojolicious][mojo], a very cool [Perl][perl] web framework. Mojolicious doesn't have any dependencies besides a modern Perl interpreter. It's very easy to install Mojolicious with this one-liner:
 
-This is the simple part.
+    $ sudo sh -c "curl -L cpanmin.us | perl - Mojolicious"
 
-#### Basic content management
+The latest version of contenticious lives in a [repository on github][gihu] and you can get it via this one-liner:
 
-Write `*.md` files in the `pages` directory, they will be interpreted with [Markdown][MD].
+    $ git clone git://github.com/memowe/contenticious.git
 
-[MD]: http://daringfireball.net/projects/markdown/
+Done.
 
-You can organize them in directories and link to other files (replace the `.md` with `.html`. If you want a start page for a directory, name it `index.md`. If no `index.md` exists, contenticious will generate an index page for that directory.
+[mojo]: http://mojolicio.us/
+[perl]: http://perl.org/
+[gihu]: http://github.com/memowe/contenticious
 
-You don't have to think about navigation - contenticious will generate a navigation bar for you.
+Let's go!
+---------
 
-If you want, you can place additional content like pictures or PDF documents in the `public` directory. They will be served automatically.
+`cd` to the contenticious directory. The interesting directory here is `pages`. You'll find some files in here so you can get a first impression of what's going on here. Feel free to play around and edit everything you can find.
 
-You can view the Markdown content in your browser after invoking
+Wait. You don't see anything but your terminal. Now please `cd` to your contenticious directory and start the preview server:
 
-    ./contenticious.pl daemon
+    $ morbo contenticious.pl
+    ...
+    Server available at http://127.0.0.1:3000.
 
-For additional options, `contenticious.pl help daemon` will be your friend.
+Now open your browser and type in that address. In contenticious's default configuration caching is disabled, so you can just edit files in your favourite text editor and after a browser refresh your text is just there - but pretty!
 
-#### Advanced content-fu
+Notice how contenticious creates a navigation for you.
 
-To manage the sorting in the navigation, prepend digits and an underscore to your file names (`017_zoom.md` first, then `042_albundy.md`).
+### On directory and file names
 
-If you want a different name for your page in the navigation, provide the navi metadata `navi` by prepending the following line to the markdown file:
+Your directory and file names become url path parts. You may want to add
+numbers to the directory and file names to get the navigation items in the
+right order. The numbers will never be seen outside.
 
-    navi: the SpEcIaL nåm€ øf ≤this≥ page
+To define content for a directory itself you can provide an `index.md` file.
+If you don't provide an `index.md` file for a directory, contenticious will
+render a list page for you. See this table for better illustration.
 
-For a special page title, provide a `title` metadata line in the same manner.
+    file system                     urls
+    -------------------------------------------------------
+    pages
+      |-- 017_c.md                  /c.html
+      |-- 018_perl
+      |    |-- index.md             /perl.html
+      |    |-- 01_introduction.md   /perl/introduction.html
+      |    '-- 42_the_cpan.md       /perl/the_cpan.html
+      '-- 072_brainfuck             /brainfuck.html
+           |--- 17_turing.md        /brainfuck/turing.html
+           '--- 69_wtf.md           /brainfuck/wtf.html
 
-To hide a page in the navigation, set the `navihide` metadata to true value: `navihide: 1`.
+In this case, `/brainfuck.html` will be an auto-generated listing of the two
+sub pages, turing and wtf. Later you will be informed how to customize the
+contenticious templates. You can adjust the listing by editing the template
+`list.html.ep`.
 
-You can also set a directory's navigation name with a `navi: ...` line as above in a file named `meta` in that directory.
+**Note**: it's impossible to have a directory and a file with the same path
+name, but I'm pretty sure you don't really want that. Instead use the
+`index.md` mechanism from above.
 
-### How to deploy
+### More about content
 
-This is the simple part. The command
+Contenticious needs some meta informations about your content files, but it
+works very hard to guess if you don't provide it. Meta information is
+provided in the first few lines of your markdown documents and looks like this
 
-    ./contenticious.pl dump
+    title: The Comprehensive Perl Archive Network
+    navi_name: The CPAN
 
-will dump all the content to the `static` directory, ready to upload to your web server.
+    It's huge, but your mom could eat it
+    ====================================
 
-### Customization (C11N)
+    **CPAN, the Comprehensive Perl Archive Network**, is an archive of over
+    100,000 modules of software written in Perl,
+    as well as documentation for it. ...
 
-This is the simple part. Just change the standard stylesheet in `public`. If that's not enough c11n for you, invoke the command
+The `title` will show up in the `title` HTML element of the pages, which will
+be rendered in the window title bar in most browsers. If no `title` line is
+provided, contenticious will try to extract the first `H1` headline of the
+document's body, which is the mom-line in this case. If there's no `H1`
+headline, contenticious will use the path part (extracted from file name).
 
-    ./contenticious.pl templates
+The second meta information is `navi_name` which will be used to generate
+the site navigation. If no `navi_name` is provided, contenticious will use
+the pathpart (extracted from file name).
 
-and all the templates are dumped to the `templates` directory. There you can change the templates, written in [ep][ep].
+Sometimes you'll need static content like images, sound files or PDF documents.
+No problem, just place them in the `public` directory and they will be served
+by contenticious under their own name.
 
-[ep]: http://search.cpan.org/dist/Mojo/lib/Mojo/Template.pm
+Customize
+---------
 
-Bugs and Caveats
-----------------
+To change contenticious' presentation and behaviour, please look at the
+configuration file `config` first. It looks like this:
 
-At this time, it's impossible by design to use a file and a directory with the same name, like `foo/*` and `foo.md`. Please use `foo/*` and `foo/index.md` instead. If you have a really good reason to use the first case, please let me know.
+    {
+        pages_dir   => app->home->rel_dir('pages'),
+        dump_dir    => app->home->rel_dir('dump'),
+        name        => 'Shagadelic',
+        copyright   => 'Zaphod Beeblebrox',
+        cached      => 0,
+    }
 
-Authors and license
+As you can see, it is a Perl data structure and you can access the `app`
+shortcut for advanced hacking. I think, the most names are rather
+self-documenting, except `cached`. When set to a true value, contenticious will
+hold the document structure in memory to serve it faster. It's deactivated
+by default for development. Otherwise you would have to restart the server
+every time you want to view your documents' last version.
+
+To change the design of contenticious' pages, edit the `styles.css` file in
+the `public` directory. Since the default HTML is very clean you should be
+able to change a lot with css changes.
+
+If that's still not enough, use the following command to extract all templates
+from contenticious' main script:
+
+    perl contenticious.pl inflate
+
+Then you can change contenticious' HTML with Mojolicious' flexible [ep template
+syntax][mote].
+
+[mote]: http://mojolicio.us/perldoc/Mojo/Template
+
+Deploying
+---------
+
+You can find a lot of information about the deployment of Mojolicious apps in
+its [wiki][mwiki]. In most cases you want to set the `chached` option to a true
+value in contenticious' config file to increase performance.
+
+It's also possible to generate static HTML and CSS files with contenticious:
+
+    $ perl contenticious.pl dump
+
+It will dump everything to the directory `dump` so you can upload it to your
+favourite web server without any perl, Mojolicious or contenticious magic.
+
+[mwiki]: https://github.com/kraih/mojo/wiki
+
+Repository with issue tracker
+-----------------------------
+
+[Contenticious' source code repository][repo] is on github. There you can also
+find a simple [issue tracker][issues]. Feel free to use it! :-)
+
+[repo]: https://github.com/memowe/contenticious
+[issues]: https://github.com/memowe/contenticious/issues
+
+Author and license
 -------------------
 
-Copyright (c) 2009 Mirko Westermeier, <mirko@westermeier.de>
+Copyright (c) Mirko Westermeier, <mail@memowe.de>
 
 Credits:
 
