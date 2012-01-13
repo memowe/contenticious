@@ -11,6 +11,31 @@ my $config      = plugin Config => {file => $config_file};
 # prepare contenticious
 my $cont = plugin Contenticious => { pages_dir => $config->{pages_dir} };
 
+# change url_for helper to use relative URLs
+# (good for dumping)
+my $url_for = *Mojolicious::Controller::url_for{CODE};
+{ no strict 'refs'; no warnings 'redefine';
+    *Mojolicious::Controller::url_for = sub {
+        my $c = shift;
+
+        # create URLs
+        my $url     = $url_for->($c, @_);
+        my $req_url = $c->req->url;
+
+        # return relative version if request URL exists
+        if ($req_url->to_string) {
+
+            # "repair" if empty
+            my $rel_url = $url->to_rel($req_url);
+            return Mojo::URL->new('./') unless $rel_url->to_string;
+            return $rel_url;
+        }
+
+        # or change nothing
+        return $url;
+    };
+}
+
 plugin Charset => {charset => 'utf-8'};
 
 # serve content
@@ -43,6 +68,9 @@ if (defined $command and $command eq 'dump') {
 
     # copy static directoy content
     dircopy(app->static->root, $dd);
+
+    # silence!
+    app->log->level('warn');
 
     # dump content
     $cont->for_all_nodes(sub {
@@ -96,8 +124,8 @@ __DATA__
 <h1><%= $content_node->title %></h1>
 <ul id="content_list">
 % foreach my $c (@{$content_node->children}) {
-    % my $rel_url = '../' x ($level - 1) . $c->path . '.html';
-    <li><a href="<%= $rel_url %>"><strong><%= $c->title %></strong></a></li>
+    % my $url = url_for 'content', cpath => $c->path, format => 'html';
+    <li><a href="<%= $url %>"><strong><%= $c->title %></strong></a></li>
 % }
 </ul>
 
@@ -113,9 +141,9 @@ __DATA__
     % foreach my $c (@{$node->children}) {
         % next if $c->name eq 'index';
         % my $class   = $c->name eq $name ? 'active' : '';
-        % my $rel_url = '../' x ($level - 1) . $c->path . '.html';
+        % my $url = url_for 'content', cpath => $c->path, format => 'html';
         <li class="<%= $class %>">
-            <a href="<%= $rel_url %>"><%= $c->navi_name %></a>
+            <a href="<%= $url %>"><%= $c->navi_name %></a>
         </li>
     % }
     </ul>
@@ -137,12 +165,12 @@ __DATA__
 <head>
     % my $t = join ' - ' => grep { $_ } stash('title'), config('name');
     <title><%= $t || 'contenticious!' %></title>
-    <%= stylesheet '../' x ($level - 1) . 'styles.css' %>
+    <%= stylesheet 'styles.css' %>
 </head>
 <body>
 <div id="top">
     <div id="inner">
-        <p id="name"><a href="<%= ('../' x ($level - 1)) || './' %>">
+        <p id="name"><a href="<%= url_for 'content', cpath => '' %>">
             <%= config('name') // 'contenticious!' %>
         </a></p>
 %= include 'navi'
