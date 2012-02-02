@@ -1,61 +1,25 @@
 package Contenticious;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Contenticious::Node::Directory;
-use File::Copy::Recursive 'dircopy';
+use Contenticious::Content;
+use Contenticious::Commands;
 use Carp;
 
-has pages_dir   => sub { croak 'no pages_dir given' };
-has root_node   => sub { shift->build_root_node };
+has app         =>  sub { croak 'no app given' };
+has pages_dir   =>  sub { croak 'no pages_dir given' };
 
-# root_node builder
-sub build_root_node {
-    my $self = shift;
-
-    # let there be root!
-    return Contenticious::Node::Directory->new(
-        filename    => $self->pages_dir,
-        is_root     => 1,
+has content     =>  sub { my $self = shift;
+    return Contenticious::Content->new(
+        pages_dir   => $self->pages_dir,
     );
-}
+};
 
-# find a content node for a given path like foo/bar/baz
-sub find {
-    my $self = shift;
-    my $path = shift // '';
-
-    # split path and find content node
-    my @names = split m|/| => $path;
-    return $self->root_node->find(@names);
-}
-
-# execute a subroutine for all content nodes
-# the given subroutine gets the node as a single argument
-sub for_all_nodes {
-    my ($self, $sub) = @_;
-    _walk_tree($self->root_node, $sub);
-}
-
-# not a public method but a recursive utitlity function
-sub _walk_tree {
-    my ($node, $sub) = @_;
-    
-    # execute
-    $sub->($node);
-
-    # walk the tree if possible (duck typing)
-    if ($node->can('children')) {
-        _walk_tree($_, $sub) foreach @{$node->children};
-    }
-}
-
-# delete cached content
-sub empty_cache {
-    my $self = shift;
-
-    # urgs
-    delete $self->{root_node};
-}
+has commands    =>  sub { my $self = shift;
+    return Contenticious::Commands->new(
+        app     => $self->app,
+        content => $self->content,
+    );
+};
 
 # register into Mojolicious apps
 sub register {
@@ -69,6 +33,16 @@ sub register {
 
     return $self;
 }
+
+# Contenticious::Content shortcuts:
+
+sub root_node { shift->content->root_node }
+
+sub find { shift->content->find(@_) }
+
+sub for_all_nodes { shift->content->for_all_nodes(@_) }
+
+sub empty_cache { shift->content->empty_cache }
 
 1;
 __END__

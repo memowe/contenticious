@@ -6,10 +6,10 @@ use Test::More tests => 14;
 use FindBin '$Bin';
 use lib "$Bin/../lib";
 
-use_ok('Contenticious');
+use_ok('Contenticious::Content');
 
-my $cont = Contenticious->new;
-isa_ok($cont, 'Contenticious', 'generated object');
+my $cont = Contenticious::Content->new;
+isa_ok($cont, 'Contenticious::Content', 'generated object');
 
 # pages_dir
 eval { $cont->pages_dir };
@@ -19,15 +19,17 @@ like($cont->pages_dir, qr|/pages|, 'right pages_dir');
 
 # root_node
 my $rn = $cont->root_node;
-isa_ok($rn, 'Contenticious::Node', 'root_node');
+isa_ok($rn, 'Contenticious::Content::Node', 'root_node');
 my $baza = $rn->find(qw(baz a));
-isa_ok($baza, 'Contenticious::Node::File', 'found node');
+isa_ok($baza, 'Contenticious::Content::Node::File', 'found node');
 is($baza->name, 'a', 'right name of found node');
 like($baza->html, qr|<h1>This is a</h1>|, 'right html of found node');
 
 # wrong pages_dir
-my $fail = Contenticious->new(pages_dir => 'bullshitbullshitbullshit');
-isa_ok($fail->root_node, 'Contenticious::Node', 'root_node from wrong dir');
+my $fail = Contenticious::Content->new(pages_dir => 'bullshitbullshitbullshit');
+isa_ok($fail->root_node, 'Contenticious::Content::Node',
+    'root_node from wrong dir'
+);
 is_deeply($fail->root_node->children, [], 'right children array (wrong dir)');
 
 # find method

@@ -1,7 +1,7 @@
-package Contenticious::Node::Directory;
-use Mojo::Base 'Contenticious::Node';
+package Contenticious::Content::Node::Directory;
+use Mojo::Base 'Contenticious::Content::Node';
 
-use Contenticious::Node::File;
+use Contenticious::Content::Node::File;
 use File::Slurp 'read_file';
 use List::Util  'first';
 
@@ -19,7 +19,7 @@ sub build_children {
 
         # add content file node
         if ($entry =~ /.md$/ and -f -r $entry) {
-            my $node = Contenticious::Node::File->new(
+            my $node = Contenticious::Content::Node::File->new(
                 filename    => $entry,
                 path_prefix => $self->path,
             );
@@ -28,7 +28,7 @@ sub build_children {
 
         # add content directory node
         elsif (-d -r -x $entry) {
-            my $node = Contenticious::Node::Directory->new(
+            my $node = Contenticious::Content::Node::Directory->new(
                 filename    => $entry,
                 path_prefix => $self->path,
             );

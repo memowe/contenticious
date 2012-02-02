@@ -1,4 +1,4 @@
-package Contenticious::Node;
+package Contenticious::Content::Node;
 use Mojo::Base -base;
 
 use Carp;

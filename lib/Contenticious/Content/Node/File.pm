@@ -1,5 +1,5 @@
-package Contenticious::Node::File;
-use Mojo::Base 'Contenticious::Node';
+package Contenticious::Content::Node::File;
+use Mojo::Base 'Contenticious::Content::Node';
 
 use Carp;
 use Mojo::Util      'decode';

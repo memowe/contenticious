@@ -7,13 +7,13 @@ use utf8;
 use FindBin '$Bin';
 use lib "$Bin/../lib";
 
-use_ok('Contenticious::Node');
-use_ok('Contenticious::Node::File');
-use_ok('Contenticious::Node::Directory');
+use_ok('Contenticious::Content::Node');
+use_ok('Contenticious::Content::Node::File');
+use_ok('Contenticious::Content::Node::Directory');
 
-# Contenticious::Node tests
-my $node = Contenticious::Node->new;
-isa_ok($node => 'Contenticious::Node', 'generated object');
+# Contenticious::Content::Node tests
+my $node = Contenticious::Content::Node->new;
+isa_ok($node => 'Contenticious::Content::Node', 'generated object');
 eval { $node->filename };
 like($@, qr/no filename given/, 'right error message');
 $node->filename('/foo/bar/42_baz.quux');
@@ -24,9 +24,11 @@ $node->path_prefix('quuuux');
 is($node->path, 'quuuux/baz', 'right path');
 is_deeply($node->meta, {}, 'right default meta hash');
 
-# Contenticious::Node::File tests
-my $fnode = Contenticious::Node::File->new(filename => "$Bin/pages/17_foo.md");
-isa_ok($fnode => 'Contenticious::Node::File', 'generated object');
+# Contenticious::Content::Node::File tests
+my $fnode = Contenticious::Content::Node::File->new(
+    filename => "$Bin/pages/17_foo.md",
+);
+isa_ok($fnode => 'Contenticious::Content::Node::File', 'generated object');
 ok(! $fnode->is_root, "isn't root");
 like($fnode->filename, qr|/pages/17_foo.md$|, 'right filename');
 is($fnode->name, 'foo', 'right extracted name');
@@ -49,7 +51,9 @@ like($fnode->html, qr|<h1>Hello wørld!</h1>|, 'right html');
 is($fnode->title, 'Simple foo file', 'right title from meta data');
 is($fnode->navi_name, 'Foooo', 'right navi_name from meta data');
 
-$fnode = Contenticious::Node::File->new(filename => "$Bin/pages/19_baz/a.md");
+$fnode = Contenticious::Content::Node::File->new(
+    filename => "$Bin/pages/19_baz/a.md",
+);
 ok(! $fnode->is_root, "isn't root");
 is($fnode->name, 'a', 'right name');
 is($fnode->raw, <<'EOF', 'right raw content');
@@ -64,7 +68,9 @@ is_deeply($fnode->meta, {}, 'right meta data');
 is($fnode->title, 'This is a', 'right title (html fallback)');
 is($fnode->navi_name, 'a', 'right navi_name (name fallback)');
 
-$fnode = Contenticious::Node::File->new(filename => "$Bin/pages/19_baz/b.md");
+$fnode = Contenticious::Content::Node::File->new(
+    filename => "$Bin/pages/19_baz/b.md",
+);
 ok(! $fnode->is_root, "isn't root");
 is($fnode->name, 'b', 'right name');
 is($fnode->raw, "This is b\n", 'right raw content');
@@ -73,12 +79,12 @@ is_deeply($fnode->meta, {}, 'right meta data');
 is($fnode->title, 'b', 'right title (name fallback)');
 is($fnode->navi_name, 'b', 'right navi_name (name fallback');
 
-# Contenticious::Node::Directory tests
-my $dnode = Contenticious::Node::Directory->new(
+# Contenticious::Content::Node::Directory tests
+my $dnode = Contenticious::Content::Node::Directory->new(
     filename    => "$Bin/pages",
     is_root     => 1,
 );
-isa_ok($dnode => 'Contenticious::Node::Directory', 'generated object');
+isa_ok($dnode => 'Contenticious::Content::Node::Directory', 'generated object');
 ok($dnode->is_root, 'is root');
 is($dnode->name, '', 'no name (root)');
 is($dnode->path, '', 'right path');
@@ -91,12 +97,12 @@ isa_ok($dnode->children, 'ARRAY', 'children');
 is(scalar(@{$dnode->children}), 3, 'three child nodes');
 my @dnc = @{$dnode->children};
 
-isa_ok($dnc[0], 'Contenticious::Node::File', 'first child');
+isa_ok($dnc[0], 'Contenticious::Content::Node::File', 'first child');
 ok(! $dnc[0]->is_root, "isn't root");
 is($dnc[0]->name, 'foo', 'right first child');
 is($dnc[0]->path, 'foo', 'right first child path');
 
-isa_ok($dnc[1], 'Contenticious::Node::Directory', 'second child');
+isa_ok($dnc[1], 'Contenticious::Content::Node::Directory', 'second child');
 ok(! $dnc[1]->is_root, "isn't root");
 is($dnc[1]->name, 'bar', 'right second child');
 is($dnc[1]->path, 'bar', 'right second child path');
@@ -109,7 +115,7 @@ is($dnc[1]->html, undef, 'no html found');
 is($dnc[1]->title, 'bar Title', 'right title');
 is($dnc[1]->navi_name, 'Baaar', 'right navi_name from meta');
 
-isa_ok($dnc[2], 'Contenticious::Node::Directory', 'third child');
+isa_ok($dnc[2], 'Contenticious::Content::Node::Directory', 'third child');
 ok(! $dnc[2]->is_root, "isn't root");
 is($dnc[2]->name, 'baz', 'right third child');
 is($dnc[2]->path, 'baz', 'right third child path');
@@ -122,11 +128,11 @@ is($dnc[2]->title, "Title of baz's index", 'right title');
 is($dnc[2]->navi_name, 'Baaaz', 'right navi_name from meta');
 
 # wrong directory
-my $fail = Contenticious::Node::Directory->new(filename => 'bullshit');
+my $fail = Contenticious::Content::Node::Directory->new(filename => 'bullshit');
 is_deeply($fail->meta, {}, 'right meta info (wrong dir)');
 is_deeply($fail->children, [], 'right children array (wrong dir)');
 
-# traverse Contenticious::Node::Directory structures
+# traverse Contenticious::Content::Node::Directory structures
 my $root = $dnode;
 is($root->find, $root, 'void traversing');
 is($root->find->path, '', 'right path');
