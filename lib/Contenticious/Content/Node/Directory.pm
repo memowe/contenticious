@@ -2,8 +2,8 @@ package Contenticious::Content::Node::Directory;
 use Mojo::Base 'Contenticious::Content::Node';
 
 use Contenticious::Content::Node::File;
-use File::Slurp 'read_file';
 use List::Util  'first';
+use Carp;
 
 has children    => sub { shift->build_children };
 has meta        => sub { shift->build_meta };
@@ -46,7 +46,15 @@ sub build_meta {
     # does a 'meta' file exist?
     my $meta_fn = $self->filename . '/meta';
     if (-f -r $meta_fn) {
-        my $meta_fc = read_file($meta_fn);
+
+        # open file for decoded reading
+        open my $meta_fh, '<:encoding(UTF-8)', $meta_fn
+            or croak "couldn't open $meta_fn: $!";
+
+        # slurp
+        my $meta_fc = do { local $/; <$meta_fh> };
+
+        # extract meta information
         $meta{lc $1} = $2
             while $meta_fc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
     }

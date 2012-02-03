@@ -1,0 +1,13 @@
+Revision history for perl module Foo::Bar
+
+0.3 2012-02-04
+
+ - really installable app with a standalone contenticious.pl script
+
+0.2 2012-01-12
+
+ - rewrite with Makefile.pm and everything
+
+0.1 2010-01-15
+
+ - first version

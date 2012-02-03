@@ -5,6 +5,7 @@ use warnings;
 use Test::More tests => 121;
 use Test::Mojo;
 use FindBin '$Bin';
+use lib "$Bin/../lib";
 use utf8;
 
 # build web app tester
