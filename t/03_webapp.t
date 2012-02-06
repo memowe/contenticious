@@ -10,7 +10,7 @@ use utf8;
 
 # build web app tester
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/config";
-require("$Bin/../contenticious.pl");
+require("$Bin/../webapp.pl");
 my $t = Test::Mojo->new;
 
 # home page: listing of foo, bar, baz

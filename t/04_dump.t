@@ -23,7 +23,7 @@ ok(! -d $dd, 'dump directory gone');
 $ENV{MOJO_LOG_LEVEL} = 'warn'; # silence!
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/config";
 unshift @ARGV, 'dump';
-require("$Bin/../contenticious.pl");
+require("$Bin/../webapp.pl");
 
 # stylesheet
 ok(-f -r "$dd/styles.css", 'stylesheet found');
