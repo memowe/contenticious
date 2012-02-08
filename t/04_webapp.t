@@ -2,15 +2,27 @@
 
 use strict;
 use warnings;
-use Test::More tests => 121;
+use Test::More tests => 131;
 use Test::Mojo;
+use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
+use Contenticious::Generator;
 use utf8;
 
+# prepare web app
+chdir $Bin;
+ok(! -e 'webapp.pl', "webapp.pl doesn't exist");
+ok(! -d 'public', "public directory doesn't exist");
+my $gen = Contenticious::Generator->new(quiet => 1);
+$gen->generate_web_app;
+$gen->generate_public_directory;
+ok(  -e 'webapp.pl', 'webapp.pl exists');
+ok(  -e 'public/styles.css', 'stylesheet exists');
+$ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
+
 # build web app tester
-$ENV{CONTENTICIOUS_CONFIG} = "$Bin/config";
-require("$Bin/../webapp.pl");
+require("$Bin/webapp.pl");
 my $t = Test::Mojo->new;
 
 # home page: listing of foo, bar, baz
@@ -143,6 +155,11 @@ is($subnavi->[1]->text, 'b', 'right baz/b link text');
 is($t->tx->res->dom->find('#subnavi li')->[1]->attrs->{class}, 'active', 'ac.');
 $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 
+# styles.css: stylesheet
+$t->get_ok('/styles.css')->status_is(200)
+  ->content_type_is('text/css')
+  ->content_like(qr/^html, body {/);
+
 # 404
 $t->get_ok('/foomatic')->status_is(404)
   ->text_is(title => 'File not found! - Shagadelic')
@@ -150,5 +167,11 @@ $t->get_ok('/foomatic')->status_is(404)
   ->text_is(h1 => 'File not found!')
   ->text_like('#content p' => qr/^I'm sorry/)
   ->text_like('#copyright' => qr/Zaphod Beeblebrox/);
+
+# done
+unlink('webapp.pl') or die "couldn't delete webapp.pl: $!";
+ok(! -f 'webapp.pl', 'webapp.pl deleted');
+remove_tree('public');
+ok(! -d 'public', 'public directory deleted');
 
 __END__

@@ -14,8 +14,8 @@ isa_ok($cont, 'Contenticious::Content', 'generated object');
 # pages_dir
 eval { $cont->pages_dir };
 like($@, qr/no pages_dir given/, 'right error message');
-$cont->pages_dir("$Bin/pages");
-like($cont->pages_dir, qr|/pages|, 'right pages_dir');
+$cont->pages_dir("$Bin/test_pages");
+like($cont->pages_dir, qr|/test_pages|, 'right pages_dir');
 
 # root_node
 my $rn = $cont->root_node;

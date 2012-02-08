@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+
+use FindBin '$Bin';
+use lib "$Bin/lib";
+use Contenticious;
+use Contenticious::Generator;
+use Mojolicious;
+
+# got a command
+if (defined $ARGV[0] and $ARGV[0] !~ /h(elp)?/i) {
+    my $command = shift @ARGV;
+
+    # generate config, web app, example pages and public stylesheet
+    if ($command eq 'init') {
+
+        print "generating contenticious boilerplate...\n";
+        Contenticious::Generator->new->init;
+        print "done.\n";
+
+        exit;
+    }
+
+    # print version
+    if ($command eq 'version') {
+        print "This is Contenticious $Contenticious::VERSION";
+        print " using Mojolicious $Mojolicious::VERSION on perl $^V\n";
+        exit;
+    }
+
+    # unknown command
+    print "Whoops: command '$command' unknown.\n";
+    print "Try 'contenticious help' for a short help message.\n";
+    exit;
+}
+
+# display help message
+print <<'EOD';
+USAGE: contenticious COMMAND
+
+Contenticious builds websites from Markdown documents. Commands:
+
+    init        Generates a basic contenticious directory structure in your
+                current working directory, which includes:
+
+                    config      a config file (Perl like)
+                    webapp.pl   a mojolicious web app which serves your files
+                    pages       put markdown documents here (with examples)
+                    public      public files like a stylesheet
+
+    version     prints the Contenticious version you are using
+
+For more help please check out the docs: perldoc Contenticious
+EOD

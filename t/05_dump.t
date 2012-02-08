@@ -3,10 +3,12 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 112;
+use Test::More tests => 118;
 use File::Path 'remove_tree';
 use Mojo::Dom;
 use FindBin '$Bin';
+use lib "$Bin/../lib";
+use Contenticious::Generator;
 
 # slurp helper
 sub slurp {
@@ -15,15 +17,25 @@ sub slurp {
     return do { local $/; <$fh> };
 }
 
-my $dd = "$Bin/dump";
-remove_tree($dd);
+# prepare file system
+chdir $Bin;
+my $dd = "test_dump";
 ok(! -d $dd, 'dump directory gone');
 
-# hardcode dumping acshun
+# prepare web app
+ok(! -e 'webapp.pl', "webapp.pl doesn't exist");
+ok(! -d 'public', "public directory doesn't exist");
+my $gen = Contenticious::Generator->new(quiet => 1);
+$gen->generate_web_app;
+$gen->generate_public_directory;
+ok(  -e 'webapp.pl', 'webapp.pl exists');
+ok(  -e 'public/styles.css', 'stylesheet exists');
 $ENV{MOJO_LOG_LEVEL} = 'warn'; # silence!
-$ENV{CONTENTICIOUS_CONFIG} = "$Bin/config";
+$ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
+
+# hardcode dumping acshun
 unshift @ARGV, 'dump';
-require("$Bin/../webapp.pl");
+require("$Bin/webapp.pl");
 
 # stylesheet
 ok(-f -r "$dd/styles.css", 'stylesheet found');
@@ -165,7 +177,12 @@ is($bazb->find('#subnavi li')->[1]->attrs->{class}, 'active', 'baz/a active');
 is($bazb->at('#content p')->text, 'This is b', 'right content');
 like($bazb->at('#copyright')->text, qr/Zaphod Beeblebrox/, 'right copyright');
 
+# cleanup
 remove_tree($dd);
 ok(! -d $dd, 'dump directory gone');
+unlink('webapp.pl') or die "couldn't delete webapp.pl: $!";
+ok(! -f 'webapp.pl', 'webapp.pl deleted');
+remove_tree('public');
+ok(! -d 'public', 'public directory deleted');
 
 __END__

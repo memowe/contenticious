@@ -1,7 +1,0 @@
-{
-    pages_dir   => app->home->rel_dir('pages'),
-    dump_dir    => app->home->rel_dir('dump'),
-    name        => 'Shagadelic',
-    copyright   => 'Zaphod Beeblebrox',
-    cached      => 0,
-}

@@ -26,11 +26,11 @@ is_deeply($node->meta, {}, 'right default meta hash');
 
 # Contenticious::Content::Node::File tests
 my $fnode = Contenticious::Content::Node::File->new(
-    filename => "$Bin/pages/17_foo.md",
+    filename => "$Bin/test_pages/17_foo.md",
 );
 isa_ok($fnode => 'Contenticious::Content::Node::File', 'generated object');
 ok(! $fnode->is_root, "isn't root");
-like($fnode->filename, qr|/pages/17_foo.md$|, 'right filename');
+like($fnode->filename, qr|/test_pages/17_foo.md$|, 'right filename');
 is($fnode->name, 'foo', 'right extracted name');
 is($fnode->raw, <<'EOF', 'right raw content');
 Title: Simple foo file
@@ -52,7 +52,7 @@ is($fnode->title, 'Simple foo file', 'right title from meta data');
 is($fnode->navi_name, 'Foooo', 'right navi_name from meta data');
 
 $fnode = Contenticious::Content::Node::File->new(
-    filename => "$Bin/pages/19_baz/a.md",
+    filename => "$Bin/test_pages/19_baz/a.md",
 );
 ok(! $fnode->is_root, "isn't root");
 is($fnode->name, 'a', 'right name');
@@ -69,7 +69,7 @@ is($fnode->title, 'This is a', 'right title (html fallback)');
 is($fnode->navi_name, 'a', 'right navi_name (name fallback)');
 
 $fnode = Contenticious::Content::Node::File->new(
-    filename => "$Bin/pages/19_baz/b.md",
+    filename => "$Bin/test_pages/19_baz/b.md",
 );
 ok(! $fnode->is_root, "isn't root");
 is($fnode->name, 'b', 'right name');
@@ -81,7 +81,7 @@ is($fnode->navi_name, 'b', 'right navi_name (name fallback');
 
 # Contenticious::Content::Node::Directory tests
 my $dnode = Contenticious::Content::Node::Directory->new(
-    filename    => "$Bin/pages",
+    filename    => "$Bin/test_pages",
     is_root     => 1,
 );
 isa_ok($dnode => 'Contenticious::Content::Node::Directory', 'generated object');
