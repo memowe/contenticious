@@ -5,7 +5,6 @@ use warnings;
 use utf8;
 use Test::More tests => 118;
 use File::Path 'remove_tree';
-use Mojo::Dom;
 use FindBin '$Bin';
 use lib "$Bin/../lib";
 use Contenticious::Generator;
