@@ -10,16 +10,20 @@ WriteMakefile(
     AUTHOR          => 'Mirko Westermeier <mail@memowe.de>',
     EXE_FILES       => ['contenticious'],
     PREREQ_PM       => {
-        'Carp'                                  => 0,
-        'File::Basename'                        => 0,
-        'File::Copy::Recursive'                 => 0,
-        'File::Path'                            => 0,
-        'FindBin'                               => 0,
-        'List::Util'                            => 0,
+
+        # core modules since 5.10
+        'Carp'                                  => '1.08',
+        'File::Basename'                        => '2.76',
+        'File::Path'                            => '2.04',
+        'FindBin'                               => '1.49',
+        'List::Util'                            => '1.19',
+
+        # non-trivial dependencies
+        'File::Copy::Recursive'                 => '0.38',
         'Mojolicious'                           => '2.4',
         'Mojolicious::Plugin::Subdispatch'      => '0.02',
         'Mojolicious::Plugin::RelativeUrlFor'   => '0.01',
-        'Text::Markdown'                        => 0,
+        'Text::Markdown'                        => '1.000031',
     },
     test            => {TESTS => 't/*.t'}
 );
