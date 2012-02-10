@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 18;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
@@ -49,6 +49,7 @@ call_script('init');
 ok(-f "$init_dir/config", 'config file exists');
 like(slurp("$init_dir/config"), qr/pages_dir *=> app->home/, 'right config');
 ok(-f "$init_dir/webapp.pl", 'web app exists');
+ok(-x "$init_dir/webapp.pl", 'web app is executable');
 like(slurp("$init_dir/webapp.pl"), qr/use Contenticious;/, 'right web app');
 ok(-f "$init_dir/pages/index.md", 'pages/index.md exists');
 like(slurp("$init_dir/pages/index.md"), qr/Title: Welcome/, 'right index page');

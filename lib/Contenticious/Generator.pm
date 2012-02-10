@@ -15,7 +15,9 @@ sub generate_config_file {
 }
 
 sub generate_web_app {
-    shift->render_to_rel_file('webapp.pl' => 'webapp.pl');
+    my $self = shift;
+    $self->render_to_rel_file('webapp.pl' => 'webapp.pl');
+    $self->chmod_rel_file('webapp.pl' => 0755);
 }
 
 sub generate_example_pages {
