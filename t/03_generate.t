@@ -48,7 +48,7 @@ is(slurp('webapp.pl'), <<'EOD', 'right webapp.pl file content');
 use Mojo::Base -strict;
 
 # use local lib (if Contenticious isn't installed)
-use FindBin '$Bin'; use lib "$Bin/../lib";
+use FindBin '$Bin'; use lib "$Bin/lib", "$Bin/../lib";
 use Contenticious;
 use Contenticious::Commands;
 use Mojolicious::Commands;
