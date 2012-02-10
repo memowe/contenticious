@@ -40,6 +40,9 @@ sub startup {
     # tell the renderer where to find templates
     $self->renderer->default_template_class('Contenticious');
 
+    # perldoc renderer (to display Contenticious.pod for first-time-users)
+    $self->plugin('PODRenderer') if $self->config('perldoc');
+
     # content action
     my $serve_content = sub {
         my $c    = shift;

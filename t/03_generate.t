@@ -39,6 +39,7 @@ is(slurp('config'), <<'EOD', 'right config file content');
     name        => 'Shagadelic',
     copyright   => 'Zaphod Beeblebrox',
     cached      => 0,
+    perldoc     => 1,
 }
 EOD
 
@@ -77,6 +78,8 @@ Welcome to contenticious
 ========================
 
 An insanely simple file system based "CMS"
+
+**TODO** perldoc: [Contenticious](perldoc/Contenticious)
 
 Resources
 ---------

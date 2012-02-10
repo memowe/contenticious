@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 131;
+use Test::More tests => 135;
 use Test::Mojo;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
@@ -167,6 +167,11 @@ $t->get_ok('/foomatic')->status_is(404)
   ->text_is(h1 => 'File not found!')
   ->text_like('#content p' => qr/^I'm sorry/)
   ->text_like('#copyright' => qr/Zaphod Beeblebrox/);
+
+# perldoc
+$t->get_ok('/perldoc/Contenticious')->status_is(200)
+  ->text_is(title => 'Contenticious - build web sites from markdown files')
+  ->text_is('h1 a#NAME' => 'NAME');
 
 # done
 unlink('webapp.pl') or die "couldn't delete webapp.pl: $!";

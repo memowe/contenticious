@@ -43,6 +43,7 @@ __DATA__
     name        => 'Shagadelic',
     copyright   => 'Zaphod Beeblebrox',
     cached      => 0,
+    perldoc     => 1,
 }
 
 @@ webapp.pl
@@ -77,6 +78,8 @@ Welcome to contenticious
 ========================
 
 An insanely simple file system based "CMS"
+
+**TODO** perldoc: [Contenticious](perldoc/Contenticious)
 
 Resources
 ---------
