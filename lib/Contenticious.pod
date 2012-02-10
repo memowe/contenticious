@@ -1,0 +1,218 @@
+=head1 NAME
+
+Contenticious - build web sites from markdown files
+
+=head1 SYNOPSIS
+
+Generate config file, directories, example pages and the webapp.pl script:
+
+    $ contenticious init
+    generating contenticious boilerplate...
+    ...
+    done.
+
+Serve markdown files from pages directory (live updated):
+
+    $ ./webapp.pl daemon
+    ...
+    Server available at http://127.0.0.1:3000.
+
+Generate static files ready for upload (dumped to the dump directory)
+
+    $ ./webapp.pl dump
+    dumping everything to /Users/memowe/code/contenticious/dump ...
+    ...
+    done!
+
+This examples show basic usage. Contenticious is highly customizable, but
+you may want to start with this basic commands to see what's happening.
+
+=head1 DESCRIPTION
+
+Contenticious is a very simple way to build a nice little website from your
+content (file-system based).
+
+You just write L<Markdown|Text::Markdown> files in a directory structure and
+check the generated HTML live in your browser. The presentation is highly
+customizable on many levels, but I think the default is readable and rather
+pretty.
+
+Since Contenticious is a Mojolicious web app, it can "be" a web server for
+your content, but you can dump everything to static files with a single
+command and upload it to your favourite web hoster.
+
+It's also possible to mount Contenticious in your Mojolicious web app.
+
+=head2 How to start
+
+Change to an empty directory and type C<contenticious help> in your termina.
+You'll see a short description of the C<contenticious> command. Let's start
+with
+
+    $ contenticious init
+
+which will generate some files and directories:
+
+=over 4
+
+=item config - a simple config file with Perl syntax.
+
+=item webapp.pl - the web app script which will serve or dump your content
+
+=item pages - a directory (structure) in which you'll write Markdown files
+
+=item public - a directory with files that will be served directly
+
+=back
+
+Now start the server:
+
+    $ ./webapp.pl daemon
+    ...
+    Server available at http://127.0.0.1:3000.
+    
+If you point your web browser to that address, you should see some example
+pages served directly (and updated live) from the pages directory. Feel free
+to edit that content and watch what happens in your browser.
+
+=head2 On directory and file names
+
+Your directory and file names become url path parts. You may want to add
+numbers to the directory and file names to get the navigation items in the
+right order. The numbers will never be seen outside.
+
+To define content for a directory itself you can provide an C<index.md> file.
+
+    file system                     urls
+    -------------------------------------------------------
+    pages
+      |-- 017_c.md                  /c.html
+      |-- 018_perl
+      |    |-- index.md             /perl.html
+      |    |-- 01_introduction.md   /perl/introduction.html
+      |    '-- 42_the_cpan.md       /perl/the_cpan.html
+      '-- 072_brainfuck             /brainfuck.html
+           |--- 17_turing.md        /brainfuck/turing.html
+           '--- 69_wtf.md           /brainfuck/wtf.html
+
+If you don't provide an C<index.md> file for a directory, contenticious will
+render a list page for you. See this table for better illustration. In this
+case, C<brainfuck.html> will be an auto-generated listing of the two
+sub pages, turing and wtf.
+
+Later you will be informed how to customize the contenticious templates.
+You can adjust the listing by editing the template C<list.html.ep>.
+
+B<Note>: it's impossible to have a directory and a file with the same path
+name, but I'm pretty sure you don't really need that. Instead use the
+C<index.md> mechanism from above.
+
+=head2 More about content
+
+Contenticious needs some meta informations about your content files, but it
+works very hard to guess if you don't provide it. Meta information is
+provided in the first few lines of your markdown documents and looks like this
+
+    title: The Comprehensive Perl Archive Network
+    navi_name: The CPAN
+
+    It's huge, but your mom could eat it
+    ====================================
+
+    **CPAN, the Comprehensive Perl Archive Network**,
+    is an archive of over 100,000 modules of software
+    written in Perl, as well as documentation for it. ...
+
+The I<title> will show up in the C<title> HTML element of the pages, which will
+be rendered in the window title bar in most browsers. If no I<title> line is
+provided, contenticious will try to extract the first C<H1> headline of the
+document's body, which is the mom-line in this case. If there's no C<H1>
+headline, contenticious will use the file's path.
+
+The second meta information is I<navi_name> which will be used to generate
+the site navigation. If no I<navi_name> is provided, contenticious will use
+the file's path.
+
+Sometimes you'll need static content like images, sound files or PDF documents.
+No problem, just place them in the public directory and they will be served
+by contenticious under their own name. After you created the basic pages
+directory with C<contenticious>, there's only one static file in public:
+the default stylesheet.
+
+=head2 Customize
+
+To change contenticious' presentation and behaviour, please look at the
+configuration file I<config> first. It looks like this:
+
+    {
+        pages_dir   => app->home->rel_dir('pages'),
+        dump_dir    => app->home->rel_dir('dump'),
+        name        => 'Shagadelic',
+        copyright   => 'Zaphod Beeblebrox',
+        cached      => 0,
+    }
+
+As you can see, it is a Perl data structure and you can access the C<app>
+shortcut for advanced hacking. I think, the most names are rather
+self-documenting, except C<cached>. When set to a true value, contenticious
+will hold the document structure in memory to serve it faster. It's
+deactivated by default for development. Otherwise you would have to restart
+the server every time you want to view the latest version.
+
+To change the design of contenticious' pages, edit the I<styles.css> file in
+the I<public> directory. Since the default HTML is very clean you should be
+able to change a lot with css changes.
+
+If that's still not enough, use the following command to extract all templates
+to a newly created I<templates> directory:
+
+    $ ./webapp.pl inflate
+
+Then you can change the generated HTML with Mojolicious' flexible
+L<ep template syntax|Mojo::Template>.
+
+=head2 Deploy
+
+You can find a lot of information about the deployment of Mojolicious apps in
+its L<wiki|https://github.com/kraih/mojo/wiki>. In most cases you want to set
+the C<chached> option to a true value in contenticious' config file to
+increase performance.
+
+But if you don't expect your content to be updated very often, just let
+Contenticious generate static HTML and CSS files for you:
+
+    $ ./webapp.pl dump
+
+It will dump everything to the directory I<dump> so you can upload it to your
+favourite web server without any perl, Mojolicious or contenticious magic.
+
+=head2 Mount to an existing web app
+
+With L<Mojolicious::Plugin::Mount> it's possible to mount whole Mojolicious web
+apps into another. Since Contenticious I<is> a web app (via I<webapp.pl>),
+you can mount Contenticious too. It works pretty straight-forward.
+See this distribution's test script I<t/07_mount.t> for an example.
+
+=head1 REPOSITORY WITH ISSUE TRACKER
+
+The source code repository of Contenticious is on github:
+L<https://github.com/memowe/contenticious>
+
+There's also a simple issue tracker. Feel free to use it:
+L<https://github.com/memowe/contenticious/issues>
+
+=head1 AUTHOR AND LICENSE
+
+Copyright (c) Mirko Westermeier, <mail@memowe.de>
+
+Credits:
+
+=over 4
+
+=item Maxim Vuets, <maxim.vuets@gmail.com>
+
+=back
+
+Thank you for your contributions!
+
+Published under the MIT license.
