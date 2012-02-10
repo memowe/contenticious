@@ -430,3 +430,55 @@ pre, code {
 }
 
 #built_with a:hover, #built_with a:active { text-decoration: underline }
+
+__END__
+
+=head1 NAME
+
+Contenticious::Generator - generates contenticious boilerplate
+
+=head1 SYNOPSIS
+
+    use Contenticious::Generator;
+    my $generator = Contenticious::Generator->new;
+    $generator->init;
+
+=head1 DESCRIPTION
+
+The generator builds a basic file-system structure for Contenticious
+
+=head1 ATTRIBUTES
+
+Contenticious::Generator inherits all L<Mojo::Command> attributes
+and implements the following new ones:
+
+None.
+
+=head1 METHODS
+
+Contenticious::Generator inherits all L<Mojo::Command> methods
+and implements the following new ones:
+
+=head2 C<generate_config_file>
+
+Generates I<config>.
+
+=head2 C<generate_web_app>
+
+Generates I<webapp.pl>.
+
+=head2 C<generate_example_pages>
+
+Generates I<pages>.
+
+=head2 C<generate_public_directory>
+
+Generates I<public>.
+
+=head2 C<init>
+
+Generates everything from above.
+
+=head1 SEE ALSO
+
+L<Contenticious>
