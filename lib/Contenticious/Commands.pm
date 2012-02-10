@@ -63,3 +63,35 @@ sub dump {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Contenticious::Commands - commands used by the contenticious script
+
+=head1 SYNOPSIS
+
+    use Contenticious::Commands;
+    my $cc = Contenticious::Commands->new(app => $app);
+    $cc->dump;
+
+=head1 DESCRIPTION
+
+The application logic behind the contenticious script
+
+=head1 ATTRIBUTES
+
+=head2 C<app>
+
+The web app to use.
+
+=head1 METHODS
+
+=head2 C<dump>
+
+Generate static HTML files from the web app
+
+=head1 SEE ALSO
+
+L<Contenticious>
