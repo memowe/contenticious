@@ -1,0 +1,49 @@
+CONTENTICIOUS
+
+Contenticious is a simple way to build a nice little website from
+Markdown content.
+
+
+PREREQUISITES
+
+    - File::Copy::Recursive 0.38
+    - Mojolicious 2.4
+    - Mojolicious::Plugin::Subdispatch 0.02
+    - Mojolicious::Plugin::RelativeUrlFor 0.01
+    - Text::Markdown 1.000031
+
+
+INSTALLATION
+
+Download the dist tarball or clone the git repository and execute the
+following standard procedure:
+
+    $ perl Makefile.PL
+    $ make
+    $ make test
+    $ make install
+
+It's possible to use this module from inside of its dist directory without
+installation.
+
+
+DOCUMENTATION
+
+After installation you can access the main documentation with this command:
+
+    $ perldoc Contenticious
+
+It's possible to view the same file without installing Contenticious:
+https://github.com/memowe/contenticious/blob/master/lib/Contenticious.pod
+
+
+AUTHOR AND LICENSE
+
+Copyright (c) Mirko Westermeier, <mail@memowe.de>
+
+Credits:
+- Maxim Vuets, <maxim.vuets@gmail.com>
+
+Thank you for your contributions!
+
+Published under the MIT license. See MIT-LICENSE.
