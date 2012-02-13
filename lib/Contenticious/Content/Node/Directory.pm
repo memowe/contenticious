@@ -101,4 +101,56 @@ sub find {
 }
 
 1;
+
 __END__
+
+=head1 NAME
+
+Contenticious::Content::Node::Directory - a directory in a Contenticious tree
+
+=head1 SYNOPSIS
+
+    use Contenticious::Content::Node::Directory;
+    my $dir = Contenticious::Content::Node::Directory->new(
+        filename => 'foo'
+    );
+    my $first_child = $dir->children->[0];
+
+=head1 DESCRIPTION
+
+Directory nodes represent directories in a Contenticious::Content content tree.
+
+=head1 ATTRIBUTES
+
+Contenticious::Content::Node::Directory inherits all
+L<Contenticious::Content::Node> attributes
+and implements the following new ones:
+
+=head2 children
+
+An array ref of child elements in this content tree.
+
+=head1 METHODS
+
+Contenticious::Content::Node::Directory inherits all
+L<Contenticious::Content::Node> methods
+and implements the following new ones:
+
+=head2 C<find_child>
+
+    my $foo = $dir->find_child('foo');
+
+Returns the first child object with that name.
+
+=head2 C<find>
+
+    my $bar_baz = $dir->find(qw(bar baz));
+
+Returns the first descendant with the path 'bar/baz' from here.
+
+=head1 SEE ALSO
+
+L<Contenticious::Content::Node>,
+L<Contenticious::Content::Node::File>,
+L<Contenticious::Content>,
+L<Contenticious>
