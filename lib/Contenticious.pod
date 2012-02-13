@@ -24,7 +24,7 @@ Generate static files ready for upload (dumped to the dump directory)
     ...
     done!
 
-This examples show basic usage. Contenticious is highly customizable, but
+These examples show basic usage. Contenticious is highly customizable, but
 you may want to start with this basic commands to see what's happening.
 
 =head1 DESCRIPTION
