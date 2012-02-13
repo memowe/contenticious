@@ -60,8 +60,8 @@ File nodes represent files in a Contenticious::Content content tree.
 
 =head1 ATTRIBUTES
 
-Contenticious::Generator inherits all L<Contenticious::Content::Node> attributes
-and implements the following new ones:
+Contenticious::Content::Node::File inherits all L<Contenticious::Content::Node>
+attributes and implements the following new ones:
 
 =head2 raw
 
@@ -73,8 +73,8 @@ File content after meta informations are extracted.
 
 =head1 METHODS
 
-Contenticious::Generator inherits all L<Contenticious::Content::Node> methods
-and implements the following new ones:
+Contenticious::Content::Node::File inherits all L<Contenticious::Content::Node>
+methods and implements the following new ones:
 
 =head2 html
 
