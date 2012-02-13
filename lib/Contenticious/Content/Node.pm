@@ -75,4 +75,69 @@ sub find {
 }
 
 1;
+
 __END__
+
+=head1 NAME
+
+Contenticious::Content::Node - base class for Contenticious content
+
+=head1 SYNOPSIS
+
+    use Mojo::Base 'Contenticious::Content::Node';
+
+=head1 DESCRIPTION
+
+Basic node functionality for both files and directories.
+
+=head1 ATTRIBUTES
+
+=head2 C<is_root>
+
+Is true iff this node is the root node of a content tree.
+
+=head2 C<filename>
+
+The filename of this node. Needs to be set early.
+
+=head2 C<name>
+
+The name of this node.
+
+=head2 C<path_prefix>
+
+A prefix for this node's path in the whole content tree.
+
+=head2 C<path>
+
+This node's path in the whole content tree.
+
+=head2 C<meta>
+
+A hashref of meta informations.
+
+=head2 C<html>
+
+Generated HTML from this node.
+
+=head2 C<title>
+
+This node's title.
+
+=head2 C<navi_name>
+
+The name this node has in the page navigation.
+
+=head1 METHODS
+
+=head2 C<find>
+
+Find nodes in this subtree. This is a very basic version. It returns the
+node if the search path is empty and undef in all other cases.
+
+=head1 SEE ALSO
+
+L<Contenticious::Content>,
+L<Contenticious::Content::Node::File>,
+L<Contenticious::Content::Node::Directory>,
+L<Contenticious>
