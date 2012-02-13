@@ -209,7 +209,7 @@ Credits:
 
 =over 4
 
-=item Maxim Vuets, <maxim.vuets@gmail.com>
+=item * Maxim Vuets, <maxim.vuets@gmail.com>
 
 =back
 
