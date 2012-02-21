@@ -137,6 +137,7 @@ __DATA__
 <head>
     % my $t = join ' - ' => grep { $_ } stash('title'), config('name');
     <title><%= $t || 'contenticious!' %></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <%= stylesheet 'styles.css' %>
 </head>
 <body>
