@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 19;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
@@ -13,7 +13,8 @@ use Mojolicious;
 sub call_script {
     my $command = shift // '';
     die "suspicious command: '$command'" unless $command =~ /^\w*$/;
-    open my $script, '-|', "$Bin/../contenticious $command"
+    #added the interpreter to the cmd line cause otherwhise you get funny results on winschrott
+    open my $script, '-|', "$^X $Bin/../contenticious $command"
         or die "couldn't call contenticious script with command '$command': $!";
     return do { local $/; <$script> };
 }
@@ -25,7 +26,9 @@ sub slurp {
     return do { local $/; <$fh> };
 }
 
-# help message
+# lets see if its there - debug relict
+ok(-f "$Bin/../contenticious", "main script found");
+
 my $help = call_script('help');
 like($help, qr/^USAGE: contenticious COMMAND/, 'right help message');
 is(call_script(), $help, 'right help message without any command');
@@ -49,7 +52,13 @@ call_script('init');
 ok(-f "$init_dir/config", 'config file exists');
 like(slurp("$init_dir/config"), qr/pages_dir *=> app->home/, 'right config');
 ok(-f "$init_dir/webapp.pl", 'web app exists');
-ok(-x "$init_dir/webapp.pl", 'web app is executable');
+
+#Oh sure... Windows and an Executable bit?! SKIP THAT!
+SKIP: {
+    skip "Windows and an Exec bit? Lets just skip this chapter!", 1 if ($^O =~ /MSWin/);
+	ok(-x "$init_dir/webapp.pl", 'web app is executable');
+}
+
 like(slurp("$init_dir/webapp.pl"), qr/use Contenticious;/, 'right web app');
 ok(-f "$init_dir/pages/index.md", 'pages/index.md exists');
 like(slurp("$init_dir/pages/index.md"), qr/Title: Welcome/, 'right index page');
