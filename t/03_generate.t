@@ -36,7 +36,7 @@ is(slurp('config'), <<'EOD', 'right config file content');
 {
     pages_dir   => app->home->rel_dir('pages'),
     dump_dir    => app->home->rel_dir('dump'),
-    name        => 'Shagadelic',
+    name        => 'This is Contenticious.',
     copyright   => 'Zaphod Beeblebrox',
     cached      => 0,
     perldoc     => 1,
@@ -72,218 +72,85 @@ EOD
 
 # welcome page
 is(slurp('pages/index.md'), <<'EOD', 'right pages/index.md file content');
-Title: Welcome to contenticious - a simple file based "CMS"!
+Title: Welcome to Contenticious - build web sites from markdown files
 
-Welcome to contenticious
-========================
+Welcome!
+========
 
-An insanely simple file system based "CMS"
+**Hi there, Contenticious is working**. This is an example page.
+You can find it in your `pages` directory.
+It is rendered live from [Markdown][md] to this
+nice HTML page together with a simple navigation.
 
-**TODO** perldoc: [Contenticious](perldoc/Contenticious)
+[md]: http://daringfireball.net/projects/markdown/
 
-Resources
----------
-
-* Please start with the [**contenticious documentation**][docs].
-
-* [**contenticious on github**][ghub] - check out the repository!
-
-* Learn more about [Mojolicious][mojo], the excellent Perl web framework
-  that made all this stuff nice and easy.
-
-I can't wait!
--------------
-
-Come on, you didn't read the [docs][docs]? :-D OK. Than just go to `pages` and
-play around. But in case of questions, come back and read the [docs][docs]!
-
-[docs]: about/README.html
-[ghub]: http://github.com/memowe/contenticious
-[mojo]: http://mojolicio.us
-EOD
-
-# readme page
-is(slurp('pages/005_about/1_README.md'), <<'EOD', 'right README page');
-contenticious
-=============
-
-**Contenticious is a very simple way to build a nice little website from your content**.
-
-You just write [Markdown][mado] files in a directory structure and check the generated HTML live in your browser. The presentation is highly customizable on many levels, but I think the default is readable and rather pretty.
-
-Contenticious can "be" a web server for your content, but you can dump everything to static files with a single command and upload it to your favourite web hoster.
-
-[mado]: http://daringfireball.net/projects/markdown/
-
-How to get it
--------------
-
-Contenticious is built on top of [Mojolicious][mojo], a very cool [Perl][perl] web framework. Mojolicious doesn't have any dependencies besides a modern Perl interpreter. It's very easy to install Mojolicious with this one-liner:
-
-    $ sudo sh -c "curl -L cpanmin.us | perl - Mojolicious"
-
-The latest version of contenticious lives in a [repository on github][gihu] and you can get it via this one-liner:
-
-    $ git clone git://github.com/memowe/contenticious.git
-
-Done.
-
-[mojo]: http://mojolicio.us/
-[perl]: http://perl.org/
-[gihu]: http://github.com/memowe/contenticious
-
-Let's go!
----------
-
-`cd` to the contenticious directory. The interesting directory here is `pages`. You'll find some files in here so you can get a first impression of what's going on here. Feel free to play around and edit everything you can find.
-
-Wait. You don't see anything but your terminal. Now please `cd` to your contenticious directory and start the preview server:
-
-    $ morbo contenticious.pl
-    ...
-    Server available at http://127.0.0.1:3000.
-
-Now open your browser and type in that address. In contenticious's default configuration caching is disabled, so you can just edit files in your favourite text editor and after a browser refresh your text is just there - but pretty!
-
-Notice how contenticious creates a navigation for you.
-
-### On directory and file names
-
-Your directory and file names become url path parts. You may want to add
-numbers to the directory and file names to get the navigation items in the
-right order. The numbers will never be seen outside.
-
-To define content for a directory itself you can provide an `index.md` file.
-If you don't provide an `index.md` file for a directory, contenticious will
-render a list page for you. See this table for better illustration.
-
-    file system                     urls
-    -------------------------------------------------------
-    pages
-      |-- 017_c.md                  /c.html
-      |-- 018_perl
-      |    |-- index.md             /perl.html
-      |    |-- 01_introduction.md   /perl/introduction.html
-      |    '-- 42_the_cpan.md       /perl/the_cpan.html
-      '-- 072_brainfuck             /brainfuck.html
-           |--- 17_turing.md        /brainfuck/turing.html
-           '--- 69_wtf.md           /brainfuck/wtf.html
-
-In this case, `/brainfuck.html` will be an auto-generated listing of the two
-sub pages, turing and wtf. Later you will be informed how to customize the
-contenticious templates. You can adjust the listing by editing the template
-`list.html.ep`.
-
-**Note**: it's impossible to have a directory and a file with the same path
-name, but I'm pretty sure you don't really want that. Instead use the
-`index.md` mechanism from above.
-
-### More about content
-
-Contenticious needs some meta informations about your content files, but it
-works very hard to guess if you don't provide it. Meta information is
-provided in the first few lines of your markdown documents and looks like this
-
-    title: The Comprehensive Perl Archive Network
-    navi_name: The CPAN
-
-    It's huge, but your mom could eat it
-    ====================================
-
-    **CPAN, the Comprehensive Perl Archive Network**, is an archive of over
-    100,000 modules of software written in Perl,
-    as well as documentation for it. ...
-
-The `title` will show up in the `title` HTML element of the pages, which will
-be rendered in the window title bar in most browsers. If no `title` line is
-provided, contenticious will try to extract the first `H1` headline of the
-document's body, which is the mom-line in this case. If there's no `H1`
-headline, contenticious will use the path part (extracted from file name).
-
-The second meta information is `navi_name` which will be used to generate
-the site navigation. If no `navi_name` is provided, contenticious will use
-the pathpart (extracted from file name).
-
-Sometimes you'll need static content like images, sound files or PDF documents.
-No problem, just place them in the `public` directory and they will be served
-by contenticious under their own name.
-
-Customize
----------
-
-To change contenticious' presentation and behaviour, please look at the
-configuration file `config` first. It looks like this:
-
-    {
-        pages_dir   => app->home->rel_dir('pages'),
-        dump_dir    => app->home->rel_dir('dump'),
-        name        => 'Shagadelic',
-        copyright   => 'Zaphod Beeblebrox',
-        cached      => 0,
-    }
-
-As you can see, it is a Perl data structure and you can access the `app`
-shortcut for advanced hacking. I think, the most names are rather
-self-documenting, except `cached`. When set to a true value, contenticious will
-hold the document structure in memory to serve it faster. It's deactivated
-by default for development. Otherwise you would have to restart the server
-every time you want to view your documents' last version.
-
-To change the design of contenticious' pages, edit the `styles.css` file in
-the `public` directory. Since the default HTML is very clean you should be
-able to change a lot with css changes.
-
-If that's still not enough, use the following command to extract all templates
-from contenticious' main script:
-
-    perl contenticious.pl inflate
-
-Then you can change contenticious' HTML with Mojolicious' flexible [ep template
-syntax][mote].
-
-[mote]: http://mojolicio.us/perldoc/Mojo/Template
-
-Deploying
----------
-
-You can find a lot of information about the deployment of Mojolicious apps in
-its [wiki][mwiki]. In most cases you want to set the `chached` option to a true
-value in contenticious' config file to increase performance.
-
-It's also possible to generate static HTML and CSS files with contenticious:
-
-    $ perl contenticious.pl dump
-
-It will dump everything to the directory `dump` so you can upload it to your
-favourite web server without any perl, Mojolicious or contenticious magic.
-
-[mwiki]: https://github.com/kraih/mojo/wiki
-
-Repository with issue tracker
------------------------------
-
-[Contenticious' source code repository][repo] is on github. There you can also
-find a simple [issue tracker][issues]. Feel free to use it! :-)
-
-[repo]: https://github.com/memowe/contenticious
-[issues]: https://github.com/memowe/contenticious/issues
-
-Author and license
+Possible next steps
 -------------------
 
-Copyright (c) Mirko Westermeier, <mail@memowe.de>
-
-Credits:
-
-- Maxim Vuets, <maxim.vuets@gmail.com>
-
-Thank you for your contributions!
-
-Published under the MIT license. See MIT-LICENSE.
+1. Edit `pages/index.md` to change this file!
+1. Read the [introduction perldoc](perldoc/Contenticious).
+1. [Customize this!](perldoc/Contenticious#Customize)
+1. Read API docs ([perldoc sitemap](Perldoc.html)).
+1. Find out [more about Contenticious](About.html).
 EOD
 
-# license page
-is(slurp('pages/005_about/2_License.md'), <<'EOD', 'right license page');
+# perldoc page
+is(slurp('pages/01_Perldoc.md'), <<'EOD', 'right perldoc page');
+title: Contenticious Perldoc Sitemap
+navi_name: Perldoc
+
+Contenticious documentation perldocs
+====================================
+
+* [Contenticious][app] - a user-friendly introduction. **Start here**!
+
+The following documents are API docs:
+
+* [Contenticious::Content][content] - access content
+* [Contenticious::Content::Node][node] - content node base class
+    * [Contenticious::Content::Node::File][file] - represents a file
+    * [Contenticious::Content::Node::Directory][dir] - represents a directory
+* [Contenticious::Commands][commands] - commands like `dump`
+* [Contenticious::Generator][generator] - generates boilerplate
+
+After installing Contenticious you can access these documents via the
+`perldoc` command:
+
+    $ perldoc Contenticious::Content::Node
+
+[app]:          perldoc/Contenticious
+[content]:      perldoc/Contenticious/Content
+[node]:         perldoc/Contenticious/Content/Node
+[file]:         perldoc/Contenticious/Content/Node/File
+[dir]:          perldoc/Contenticious/Content/Node/Directory
+[commands]:     perldoc/Contenticious/Commands
+[generator]:    perldoc/Contenticious/Generator
+EOD
+
+# about page
+is(slurp('pages/02_About.md'), <<'EOD', 'right about page');
+title: About Contenticious
+navi_name: About
+
+About Contenticious
+===================
+
+Contenticious is a small and clean [Mojolicious][mojo] web app with additional
+tools to provide a smooth Markdown publishing workflow for you.
+It's developed as open source with one of the most free [licenses][license]
+(MIT License) to make it really easy for you to get your stuff done.
+
+* [**Follow Contenticious' development on github][repo]**  
+    There you'll find a bug tracker, a wiki and all sources.
+
+Help testing and improving Contenticious!
+
+[mojo]:     http://mojolicio.us/
+[license]:  #license
+[repo]:     http://github.com/memowe/contenticious
+
+<h2 id="license">License</h2>
+
 Copyright (c) Mirko Westermeier, <mail@memowe.de>
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -312,7 +179,7 @@ html, body {
     margin          : 0;
     padding         : 0;
     color           : black;
-    background-color: #eee;
+    background-color: #f4f4f4;
     font-family     : 'Helvetica', sans-serif;
 }
 
@@ -320,22 +187,18 @@ html, body {
 
 p { margin: .66em 0; padding: 0 }
 
-strong { font-weight: bold }
-
-em { font-style: italic }
-
 #top {
-    background-color: #222;
-    color           : #ddd;
+    background-color: #111;
+    color           : #ccc;
     margin          : 0;
-    padding         : 1em 5ex;
-    border-bottom   : medium solid #999;
+    padding         : 1.5em;
+    box-shadow      : 0 -5px 5px 5px #999;
 }
 
 #top #inner {
-    width           : 100ex;
+    width           : 90ex;
     margin          : 0 auto;
-    padding         : 0;
+    padding         : 0 7ex;
 }
 
 #top #name a {
@@ -344,51 +207,90 @@ em { font-style: italic }
     text-decoration : none;
 }
 
-#top #navi, #top #subnavi, #top #subsubnavi {
-    margin          : .5em 0 0;
+#top #navi {
+    display         : block;
+    margin          : 0;
     padding         : 0;
+    font-size       : 1.3em;
 }
 
-#top #navi { font-size: 1.2em }
-#top #subnavi { font-weight: bold }
-
-#top #navi li, #top #subnavi li, #top #subsubnavi li {
+#top #navi li {
     display         : inline;
     margin          : 0;
-    padding         : .2em 1ex;
-    border-radius   : .5em;
+    padding         : 0 2ex 0 0;
 }
 
-#top #navi li:first-child, #top #subnavi li:first-child,
-#top #subsubnavi li:first-child { margin-left: -1ex }
-
-#top #navi li.active, #top #subnavi li.active, #top #subsubnavi li.active {
-    background-color: #444;
-}
-
-#top #navi a, #top #subnavi a, #top #subsubnavi a {
+#top #navi a {
+    color           : #ddd;
     text-decoration : none;
-    color           : inherit;
 }
 
-#top #navi a:hover, #top #navi a:active,
-#top #subnavi a:hover, #top #subnavi a:active,
-#top #subsubnavi a:hover, #top #subsubnavi a:active { color: white }
+#top #navi .active a {
+    padding-bottom  : .2em;
+    border-bottom   : .2em solid #555;
+    color           : white;
+}
 
-#content {
+#top #navi a:hover, #top #navi a:active {
+    padding-bottom  : .2em;
+    border-bottom   : .2em solid #555;
+}
+
+#main {
     width           : 90ex;
     margin          : 0 auto;
-    padding         : 2em 7ex 3em;
+    padding         : 0 7ex 3em;
     color           : #333;
-    background-color: #f8f8f8;
-    border          : solid #ddd;
-    border-width    : 0 thin thin;
+    background-color: white;
+    box-shadow      : 0 0 3px #ccc;
+}
+
+#main .navi {
+    display         : block;
+    margin          : 0 -7ex;
+    padding         : .8em 7ex .6em;
+    border-bottom   : .1em solid #ddd;
+}
+
+#main .navi li {
+    display         : inline;
+    margin          : 0;
+    padding         : 0 2ex 0 0;
+}
+
+#main #subnavi                  li { font-size: 1em }
+#main #subsubnavi               li { font-size: .9em }
+#main #subsubsubnavi            li { font-size: .8em }
+#main #subsubsubsubnavi         li { font-size: .7em }
+#main #subsubsubsubsubnavi      li { font-size: .7em }
+#main #subsubsubsubsubsubnavi   li { font-size: .7em }
+#main #subsubsubsubsubsubsubnavi { /* wtf */ }
+
+#main .navi a {
+    color           : #555;
+    text-decoration : none;
+    font-weight     : bold;
+}
+
+#main .navi .active a {
+    color           : black;
+    padding-bottom  : .1em;
+    border-bottom   : .3em solid #eee;
+}
+
+#main .navi a:hover, #main .navi a:active {
+    padding-bottom  : .1em;
+    border-bottom   : .3em solid #eee;
 }
 
 #content h1, #content h2, #content h3 {
     font-weight     : bold;
     margin          : 2em 0 1em;
     padding         : 0;
+}
+
+#content {
+    padding-top     : 2em;
 }
 
 #content h1 { font-size: 2em; font-weight: normal; margin-top: .5em }
@@ -402,7 +304,7 @@ em { font-style: italic }
     color           : #039;
 }
 
-#content a:visited { color: #333 }
+#content a:visited { color: #026 }
 
 pre {
     margin          : 1em 0;
@@ -427,12 +329,12 @@ pre, code {
 
 #built_with {
     font-size       : .9em;
-    color           : #999;
+    color           : #bbb;
 }
 
 #built_with a {
     text-decoration : none;
-    color           : #888;
+    color           : #999;
 }
 
 #built_with a:hover, #built_with a:active { text-decoration: underline }

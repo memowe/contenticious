@@ -53,17 +53,17 @@ ok(-x "$init_dir/webapp.pl", 'web app is executable');
 like(slurp("$init_dir/webapp.pl"), qr/use Contenticious;/, 'right web app');
 ok(-f "$init_dir/pages/index.md", 'pages/index.md exists');
 like(slurp("$init_dir/pages/index.md"), qr/Title: Welcome/, 'right index page');
-ok(-f "$init_dir/pages/005_about/1_README.md", 'README page exists');
+ok(-f "$init_dir/pages/01_Perldoc.md", 'perldoc page exists');
 like(
-    slurp("$init_dir/pages/005_about/1_README.md"),
-    qr/contenticious\n=============/,
-    'right README page',
+    slurp("$init_dir/pages/01_Perldoc.md"),
+    qr/perldocs\n=============/,
+    'right perldoc page',
 );
-ok(-f "$init_dir/pages/005_about/2_License.md", 'License page exists');
+ok(-f "$init_dir/pages/02_About.md", 'About page exists');
 like(
-    slurp("$init_dir/pages/005_about/2_License.md"),
+    slurp("$init_dir/pages/02_About.md"),
     qr/Copyright \(c\) Mirko Westermeier, <mail\@memowe.de>/,
-    'right License page',
+    'right About page',
 );
 ok(-f "$init_dir/public/styles.css", 'public/styles.css exists');
 like(slurp("$init_dir/public/styles.css"), qr/html, body {/, 'right css');
