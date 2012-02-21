@@ -1,8 +1,8 @@
-Revision history for perl module Foo::Bar
+Revision history for perl module Contenticious
 
-0.3 2012-02-08
+0.3 2012-02-21
 
- - really installable app with a standalone contenticious.pl script
+ - really installable app with a standalone contenticious script
 
 0.2 2012-01-12
 
