@@ -100,22 +100,28 @@ __DATA__
 @@ navi.html.ep
 % my $node      = contenticious->root_node;
 % my @names     = split m|/| => $cpath;
-% my $prefix    = '';
+% my $level     = 1;
 % LOOP: { do { # perldoc perlsyn: do-while isn't a loop
     % last unless $node->can('children');
-    % my $name = shift(@names) // '';
-    <ul id="<%= $prefix %>navi">
-    % foreach my $c (@{$node->children}) {
-        % next if $c->name eq 'index';
-        % my $class   = $c->name eq $name ? 'active' : '';
-        % my $url = url_for 'content', cpath => $c->path, format => 'html';
+    % my $name      = shift(@names) // '';
+    % my $id_prefix = 'sub' x ($level - 1);
+    % unless (
+    %   (defined stash('only') and stash('only') != $level) or
+    %   (defined stash('only_not') and stash('only_not') == $level)
+    % ) {
+    <ul class="navi" id="<%= $id_prefix %>navi">
+        % foreach my $c (@{$node->children}) {
+            % next if $c->name eq 'index';
+            % my $class   = $c->name eq $name ? 'active' : '';
+            % my $url = url_for 'content', cpath => $c->path, format => 'html';
         <li class="<%= $class %>">
             <a href="<%= $url %>"><%= $c->navi_name %></a>
         </li>
-    % }
+        % }
     </ul>
+    % }
     % $node = $node->find($name) or last;
-    % $prefix .= 'sub';
+    % $level++;
 % } while 1 }
 
 @@ not_found.html.ep
@@ -139,12 +145,15 @@ __DATA__
         <p id="name"><a href="<%= url_for 'content', cpath => '' %>">
             <%= config('name') // 'contenticious!' %>
         </a></p>
-%= include 'navi'
+%= include 'navi', only => 1
     </div><!-- inner -->
 </div><!-- top -->
+<div id="main">
+%= include 'navi', only_not => 1
 <div id="content">
 %= content
 </div><!-- content -->
+</div><!-- main -->
 <div id="footer">
     % if (config 'copyright') {
     <p id="copyright">
