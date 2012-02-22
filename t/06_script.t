@@ -13,8 +13,12 @@ use Mojolicious;
 sub call_script {
     my $command = shift // '';
     die "suspicious command: '$command'" unless $command =~ /^\w*$/;
-    #added the interpreter to the cmd line cause otherwhise you get funny results on winschrott
-    open my $script, '-|', "$^X $Bin/../contenticious $command"
+
+    # explicit interpreter usage for windows
+    my $interpreter = ($^O =~ /MSWin/) ? $^X : '';
+
+    # call and return STDOUT output
+    open my $script, '-|', "$interpreter $Bin/../contenticious $command"
         or die "couldn't call contenticious script with command '$command': $!";
     return do { local $/; <$script> };
 }
@@ -26,9 +30,10 @@ sub slurp {
     return do { local $/; <$fh> };
 }
 
-# lets see if its there - debug relict
+# make sure there's a script to call
 ok(-f "$Bin/../contenticious", "main script found");
 
+# help message
 my $help = call_script('help');
 like($help, qr/^USAGE: contenticious COMMAND/, 'right help message');
 is(call_script(), $help, 'right help message without any command');
@@ -53,12 +58,14 @@ ok(-f "$init_dir/config", 'config file exists');
 like(slurp("$init_dir/config"), qr/pages_dir *=> app->home/, 'right config');
 ok(-f "$init_dir/webapp.pl", 'web app exists');
 
-#Oh sure... Windows and an Executable bit?! SKIP THAT!
+# check if web app is executable (skip on windows)
 SKIP: {
-    skip "Windows and an Exec bit? Lets just skip this chapter!", 1 if ($^O =~ /MSWin/);
+    skip 'Windows and an Exec bit? Lets just skip this chapter!', 1
+        if ($^O =~ /MSWin/);
 	ok(-x "$init_dir/webapp.pl", 'web app is executable');
 }
 
+# continue boilerplate testing
 like(slurp("$init_dir/webapp.pl"), qr/use Contenticious;/, 'right web app');
 ok(-f "$init_dir/pages/index.md", 'pages/index.md exists');
 like(slurp("$init_dir/pages/index.md"), qr/Title: Welcome/, 'right index page');
