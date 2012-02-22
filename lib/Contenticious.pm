@@ -1,7 +1,7 @@
 package Contenticious;
 use Mojo::Base 'Mojolicious';
 
-our $VERSION = '0.3';
+our $VERSION = '0.31';
 
 use Contenticious::Content;
 use Carp;

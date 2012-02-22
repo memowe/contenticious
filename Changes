@@ -1,13 +1,17 @@
 Revision history for perl module Contenticious
 
-0.3 2012-02-21
+0.31    2012-02-22
+
+ - fixed windows compatibility for the script test (stephan48)
+
+0.3     2012-02-21
 
  - really installable app with a standalone contenticious script
 
-0.2 2012-01-12
+0.2     2012-01-12
 
  - rewrite with Makefile.pm and everything
 
-0.1 2010-01-15
+0.1     2010-01-15
 
  - first version

@@ -211,6 +211,8 @@ Credits:
 
 =item * Maxim Vuets, <maxim.vuets@gmail.com>
 
+=item * Stephan Jauernick, <stephan@stejau.de>
+
 =back
 
 Thank you for your contributions!
