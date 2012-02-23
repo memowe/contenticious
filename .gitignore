@@ -10,3 +10,4 @@ Makefile*
 MANIFEST*
 !MANIFEST.SKIP
 *META.*
+release/*
