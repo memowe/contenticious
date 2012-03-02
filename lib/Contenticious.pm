@@ -52,7 +52,7 @@ sub startup {
         $path =~ s/\.html$//;
 
         # found matching content node?
-        my $content_node = $c->app->content->find($path);
+        my $content_node = $c->contenticious->find($path);
         unless (defined $content_node) {
             $c->render_not_found;
             return;
@@ -66,7 +66,7 @@ sub startup {
         );
 
         # empty cache?
-        $c->app->content->empty_cache unless $c->config('cached');
+        $c->contenticious->empty_cache unless $c->config('cached');
     };
 
     # content routes
