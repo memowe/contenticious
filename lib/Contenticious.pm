@@ -165,7 +165,7 @@ __DATA__
     % }
     <p id="built_with">
         built with
-        <a href="http://github.com/memowe/contenticious">contenticious</a>,
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
         on top of <a href="http://mojolicio.us/">Mojolicious</a>.
     </p>
 </div><!-- footer -->

@@ -6,6 +6,8 @@ directories for you to get you started in no time. With one single command
 Contenticious will create static HTML ready for upload. It's also possible
 to mount Contenticious in existing Mojolicious web apps.
 
+See http://memowe.github.com/contenticious for an introduction.
+
 
 PREREQUISITES
 
