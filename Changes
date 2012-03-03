@@ -1,5 +1,10 @@
 Revision history for perl module Contenticious
 
+0.311   2012-03-03
+
+ - changed nothing important, just needed to bump the version number
+   to be able to upload tarball to CPAN (my fault)
+
 0.31    2012-02-22
 
  - fixed windows compatibility for the script test (stephan48)
