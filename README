@@ -20,8 +20,18 @@ PREREQUISITES
 
 INSTALLATION
 
-Download the dist tarball or clone the git repository and execute the
-following standard procedure:
+This distribution is available on CPAN. You can install it like any other
+CPAN module via
+
+    $ cpan Contenticious
+
+or
+
+    $ cpanm Contenticious
+
+See their documentation for details. To install it manually,
+download the dist tarball or clone the git repository
+and execute the following standard procedure:
 
     $ perl Makefile.PL
     $ make
@@ -39,7 +49,7 @@ After installation you can access the main documentation with this command:
     $ perldoc Contenticious
 
 It's possible to view the same file without installing Contenticious:
-https://github.com/memowe/contenticious/blob/master/lib/Contenticious.pod
+http://search.cpan.org/dist/Contenticious/lib/Contenticious.pod
 
 
 AUTHOR AND LICENSE
