@@ -1,8 +1,9 @@
 Revision history for perl module Contenticious
 
-TODO next version
+0.32    2012-03-05
 
  - updated README (Contenticious is on CPAN now)
+ - added morbo support
 
 0.311   2012-03-03
 
