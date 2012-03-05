@@ -49,13 +49,18 @@ is(slurp('webapp.pl'), <<'EOD', 'right webapp.pl file content');
 use Mojo::Base -strict;
 
 # use local lib (if Contenticious isn't installed)
-use FindBin '$Bin'; use lib "$Bin/lib", "$Bin/../lib";
+BEGIN {
+    use File::Basename 'dirname';
+    my $dir = dirname(__FILE__);
+    unshift @INC, "$dir/lib", "$dir/../lib";
+}
+
 use Contenticious;
 use Contenticious::Commands;
 use Mojolicious::Commands;
 
 # use Contenticious
-$ENV{MOJO_HOME} = $Bin;
+$ENV{MOJO_HOME} = dirname(__FILE__);
 my $app = Contenticious->new;
 
 # Contenticious dump command
