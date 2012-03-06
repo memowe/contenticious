@@ -14,11 +14,8 @@ sub call_script {
     my $command = shift // '';
     die "suspicious command: '$command'" unless $command =~ /^\w*$/;
 
-    # explicit interpreter usage cause of windows and cpantesters
-    my $interpreter = $^X;
-
     # call and return STDOUT output
-    open my $script, '-|', "$interpreter $Bin/../contenticious $command"
+    open my $script, '-|', "$^X $Bin/../contenticious $command"
         or die "couldn't call contenticious script with command '$command': $!";
     return do { local $/; <$script> };
 }
