@@ -1,5 +1,10 @@
 Revision history for perl module Contenticious
 
+0.321   2012-03-06
+
+ - fixed a bug in t/06_script.t (tinita, stephan48)
+   cpantesters reports should be much "greener" now
+
 0.32    2012-03-05
 
  - updated README (Contenticious is on CPAN now)
