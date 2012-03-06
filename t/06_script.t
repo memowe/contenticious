@@ -14,8 +14,8 @@ sub call_script {
     my $command = shift // '';
     die "suspicious command: '$command'" unless $command =~ /^\w*$/;
 
-    # explicit interpreter usage for windows
-    my $interpreter = ($^O =~ /MSWin/) ? $^X : '';
+    # explicit interpreter usage cause of windows and cpantesters
+    my $interpreter = $^X;
 
     # call and return STDOUT output
     open my $script, '-|', "$interpreter $Bin/../contenticious $command"
