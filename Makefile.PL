@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use 5.10.0;
 
 use ExtUtils::MakeMaker;
 
@@ -9,6 +8,7 @@ WriteMakefile(
     VERSION_FROM    => 'lib/Contenticious.pm',
     AUTHOR          => 'Mirko Westermeier <mail@memowe.de>',
     EXE_FILES       => ['contenticious'],
+    MIN_PERL_VERSION    => '5.10.1',
     PREREQ_PM       => {
 
         # core modules since 5.10
