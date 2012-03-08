@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.322   2012-03-08
+
+ - a better Makefile.PM with MIN_PERL_VERSION and META informations
+
 0.321   2012-03-06
 
  - fixed a bug in t/06_script.t (tinita, stephan48)
