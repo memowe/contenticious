@@ -4,12 +4,12 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME            => 'Contenticious',
-    VERSION_FROM    => 'lib/Contenticious.pm',
-    AUTHOR          => 'Mirko Westermeier <mail@memowe.de>',
-    EXE_FILES       => ['contenticious'],
+    NAME                => 'Contenticious',
+    VERSION_FROM        => 'lib/Contenticious.pm',
+    AUTHOR              => 'Mirko Westermeier <mail@memowe.de>',
+    EXE_FILES           => ['contenticious'],
     MIN_PERL_VERSION    => '5.10.1',
-    PREREQ_PM       => {
+    PREREQ_PM           => {
 
         # core modules since 5.10
         'Carp'                                  => '1.08',
@@ -25,5 +25,5 @@ WriteMakefile(
         'Mojolicious::Plugin::RelativeUrlFor'   => '0.01',
         'Text::Markdown'                        => '1.000031',
     },
-    test            => {TESTS => 't/*.t'}
+    test                => {TESTS => 't/*.t'}
 );
