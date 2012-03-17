@@ -164,13 +164,13 @@ for configuring the Hypnotoad production server, the following parametres could
 be added:
 
     {
-    	...
+        ...
         cached      => 0,
-	hypnotoad   => {
-	                  listen  => ['http://*:3000'], 
-	               	  workers => 10,  
-			  proxy   => 1,
-		       },
+        hypnotoad   => {
+            listen  => ['http://*:3000'], 
+            workers => 10,  
+            proxy   => 1,
+        },
     }
 
 To change the design of contenticious' pages, edit the I<styles.css> file in
