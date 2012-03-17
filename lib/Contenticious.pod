@@ -159,6 +159,20 @@ will hold the document structure in memory to serve it faster. It's
 deactivated by default for development. Otherwise you would have to restart
 the server every time you want to view the latest version.
 
+Other modules might be configured from this configuration file. For example,
+for configuring the Hypnotoad production server, the following parametres could
+be added:
+
+    {
+    	...
+        cached      => 0,
+	hypnotoad   => {
+	                  listen  => ['http://*:3000'], 
+	               	  workers => 10,  
+			  proxy   => 1
+		       },
+    }
+
 To change the design of contenticious' pages, edit the I<styles.css> file in
 the I<public> directory. Since the default HTML is very clean you should be
 able to change a lot with css changes.
