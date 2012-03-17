@@ -169,7 +169,7 @@ be added:
 	hypnotoad   => {
 	                  listen  => ['http://*:3000'], 
 	               	  workers => 10,  
-			  proxy   => 1
+			  proxy   => 1,
 		       },
     }
 
