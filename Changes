@@ -1,5 +1,11 @@
 Revision history for perl module Contenticious
 
+0.323   2012-03-27
+
+ - updated Mojolicious::Renderer->default_template_class
+   and Mojolicious::Static->root calls
+ - added hypnotoad configuration documentation
+
 0.322   2012-03-08
 
  - a better Makefile.PM with MIN_PERL_VERSION and META informations
