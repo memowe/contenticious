@@ -18,8 +18,8 @@ sub dump {
 
     say 'dumping everything to ' . $dd . ' ...';
 
-    # copy static directory content
-    dircopy($app->static->paths->[0], $dd);
+    # copy static directory contents
+    dircopy($_, $dd) for @{$app->static->paths};
 
     # silence!
     $app->log->level('warn');
