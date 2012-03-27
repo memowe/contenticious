@@ -1,7 +1,7 @@
 package Contenticious;
 use Mojo::Base 'Mojolicious';
 
-our $VERSION = '0.322';
+our $VERSION = '0.323';
 
 use Contenticious::Content;
 use Carp;
@@ -38,7 +38,7 @@ sub startup {
     $self->plugin(Charset => {charset => 'utf8'});
 
     # tell the renderer where to find templates
-    $self->renderer->default_template_class('Contenticious');
+    $self->renderer->classes(['Contenticious']);
 
     # perldoc renderer (to display Contenticious.pod for first-time-users)
     $self->plugin('PODRenderer') if $self->config('perldoc');
