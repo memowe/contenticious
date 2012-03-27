@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.324   2012-03-27
+
+- increased Mojolicious version number because of a small inflate command bug
+
 0.323   2012-03-27
 
  - updated Mojolicious::Renderer->default_template_class
