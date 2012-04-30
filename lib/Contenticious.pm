@@ -1,7 +1,7 @@
 package Contenticious;
 use Mojo::Base 'Mojolicious';
 
-our $VERSION = '0.324';
+our $VERSION = '0.325';
 
 use Contenticious::Content;
 use Carp;
@@ -83,7 +83,7 @@ __DATA__
 @@ content.html.ep
 % layout 'contenticious', title => $content_node->title;
 % if (defined $content_node->html) {
-%= b($content_node->html)
+%== $content_node->html
 % } else {
 %= include 'list', content_node => $content_node
 % }

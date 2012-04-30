@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.325   2012-04-29
+
+- removed a small incompatibility in content.html.ep (%== instead of b helper)
+
 0.324   2012-03-27
 
 - increased Mojolicious version number because of a small inflate command bug
