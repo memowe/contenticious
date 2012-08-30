@@ -30,7 +30,7 @@ WriteMakefile(
 
         # non-trivial dependencies
         'File::Copy::Recursive'                 => '0.38',
-        'Mojolicious'                           => '2.70',
+        'Mojolicious'                           => '3.00',
         'Mojolicious::Plugin::Subdispatch'      => '0.02',
         'Mojolicious::Plugin::RelativeUrlFor'   => '0.01',
         'Text::Markdown'                        => '1.000031',
