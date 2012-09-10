@@ -1,5 +1,5 @@
 package Contenticious::Generator;
-use Mojo::Base 'Mojo::Command';
+use Mojo::Base 'Mojolicious::Command';
 
 # store everything in files
 sub init {
@@ -354,14 +354,14 @@ The generator builds a basic file-system structure for Contenticious
 
 =head1 ATTRIBUTES
 
-Contenticious::Generator inherits all L<Mojo::Command> attributes
+Contenticious::Generator inherits all L<Mojolicious::Command> attributes
 and implements the following new ones:
 
 None.
 
 =head1 METHODS
 
-Contenticious::Generator inherits all L<Mojo::Command> methods
+Contenticious::Generator inherits all L<Mojolicious::Command> methods
 and implements the following new ones:
 
 =head2 C<generate_config_file>
