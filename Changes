@@ -1,50 +1,58 @@
 Revision history for perl module Contenticious
 
+0.327   2012-09-11
+
+    - replaced Mojo::Command by Mojolicious::Command (Joel Berger)
+
+0.326   2012-08-30
+
+    - removed MOJO_APP usage
+
 0.325   2012-04-29
 
-- removed a small incompatibility in content.html.ep (%== instead of b helper)
+    - removed a small incompatibility in content.html.ep (%== instead of b)
 
 0.324   2012-03-27
 
-- increased Mojolicious version number because of a small inflate command bug
+    - increased Mojolicious version because of a small inflate command bug
 
 0.323   2012-03-27
 
- - updated Mojolicious::Renderer->default_template_class
-   and Mojolicious::Static->root calls
- - added hypnotoad configuration documentation
+    - updated Mojolicious::Renderer->default_template_class
+      and Mojolicious::Static->root calls
+    - added hypnotoad configuration documentation
 
 0.322   2012-03-08
 
- - a better Makefile.PM with MIN_PERL_VERSION and META informations
+    - a better Makefile.PM with MIN_PERL_VERSION and META informations
 
 0.321   2012-03-06
 
- - fixed a bug in t/06_script.t (tinita, stephan48)
-   cpantesters reports should be much "greener" now
+    - fixed a bug in t/06_script.t (tinita, stephan48)
+      cpantesters reports should be much "greener" now
 
 0.32    2012-03-05
 
- - updated README (Contenticious is on CPAN now)
- - added morbo support
+    - updated README (Contenticious is on CPAN now)
+    - added morbo support
 
 0.311   2012-03-03
 
- - changed nothing important, just needed to bump the version number
-   to be able to upload tarball to CPAN (my fault)
+    - changed nothing important, just needed to bump the version number
+      to be able to upload tarball to CPAN (my fault)
 
 0.31    2012-02-22
 
- - fixed windows compatibility for the script test (stephan48)
+    - fixed windows compatibility for the script test (stephan48)
 
 0.3     2012-02-21
 
- - really installable app with a standalone contenticious script
+    - really installable app with a standalone contenticious script
 
 0.2     2012-01-12
 
- - rewrite with Makefile.pm and everything
+    - rewrite with Makefile.pm and everything
 
 0.1     2010-01-15
 
- - first version
+    - first version
