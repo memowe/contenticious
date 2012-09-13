@@ -1,5 +1,10 @@
 Revision history for perl module Contenticious
 
+0.328   2012-09-13
+
+    - temporarily disabled the (not so important) mount test
+      because FindBin dies in Mojo::Server
+
 0.327   2012-09-11
 
     - replaced Mojo::Command by Mojolicious::Command (Joel Berger)
