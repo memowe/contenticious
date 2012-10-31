@@ -1,5 +1,11 @@
 Revision history for perl module Contenticious
 
+0.33    2012-10-31
+
+    - disabled RelativeUrlFor's replace_url_for and switched to manual
+      IMPORTANT: maybe you have to replace url_for with rel_url_for in
+                 your existing inflated templates!
+
 0.328   2012-09-13
 
     - temporarily disabled the (not so important) mount test

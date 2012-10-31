@@ -1,7 +1,7 @@
 package Contenticious;
 use Mojo::Base 'Mojolicious';
 
-our $VERSION = '0.328';
+our $VERSION = '0.33';
 
 use Contenticious::Content;
 use Carp;
@@ -29,7 +29,7 @@ sub startup {
     $self->pages_dir($config->{pages_dir} // $self->home->rel_dir('pages'));
 
     # dumping needs relative URLs
-    $self->plugin(RelativeUrlFor => {replace_url_for => 1});
+    $self->plugin('RelativeUrlFor');
 
     # add content helper
     $self->helper(contenticious => sub { $self->content });
@@ -92,7 +92,7 @@ __DATA__
 <h1><%= $content_node->title %></h1>
 <ul id="content_list">
 % foreach my $c (@{$content_node->children}) {
-    % my $url = url_for 'content', cpath => $c->path, format => 'html';
+    % my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
     <li><a href="<%= $url %>"><strong><%= $c->title %></strong></a></li>
 % }
 </ul>
@@ -113,7 +113,7 @@ __DATA__
         % foreach my $c (@{$node->children}) {
             % next if $c->name eq 'index';
             % my $class   = $c->name eq $name ? 'active' : '';
-            % my $url = url_for 'content', cpath => $c->path, format => 'html';
+            % my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
         <li class="<%= $class %>">
             <a href="<%= $url %>"><%= $c->navi_name %></a>
         </li>
@@ -138,12 +138,12 @@ __DATA__
     % my $t = join ' - ' => grep { $_ } stash('title'), config('name');
     <title><%= $t || 'contenticious!' %></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <%= stylesheet 'styles.css' %>
+    <link rel="stylesheet" type="text/css" href="<%= rel_url_for 'styles.css' %>">
 </head>
 <body>
 <div id="top">
     <div id="inner">
-        <p id="name"><a href="<%= url_for 'content', cpath => '' %>">
+        <p id="name"><a href="<%= rel_url_for 'content', cpath => '' %>">
             <%= config('name') // 'contenticious!' %>
         </a></p>
 %= include 'navi', only => 1
