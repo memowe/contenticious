@@ -1,5 +1,10 @@
 Revision history for perl module Contenticious
 
+0.331   2012-12-09
+
+    - added a dummy base url for M::P::Subdispatch to correctly generate
+      relative urls
+
 0.33    2012-10-31
 
     - disabled RelativeUrlFor's replace_url_for and switched to manual

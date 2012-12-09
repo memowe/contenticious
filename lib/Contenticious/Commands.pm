@@ -25,7 +25,7 @@ sub dump {
     $app->log->level('warn');
 
     # pretty subdispatching
-    $app->plugin('Subdispatch');
+    $app->plugin('Subdispatch', {base_url => 'http://dummy_base'});
 
     # dump content
     $app->content->for_all_nodes(sub {
