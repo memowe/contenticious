@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.332   2012-12-11
+
+    - forgot to add the latest M::P::RelativeUrlFor changes to deps - sorry!
+
 0.331   2012-12-09
 
     - added a dummy base url for M::P::Subdispatch to correctly generate
