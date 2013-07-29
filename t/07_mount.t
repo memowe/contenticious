@@ -37,16 +37,16 @@ $t->get_ok('/pages')->status_is(200)
   ->text_is(title => 'Shagadelic')
   ->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 is(
-    $t->tx->res->dom->at('#content_list li:nth-child(3) a')->attrs->{href},
+    $t->tx->res->dom->at('#content_list li:nth-child(3) a')->attr('href'),
     'pages/baz.html',
     'right 3rd link',
 );
 $t->get_ok('/pages/baz/a.html')->status_is(200)
   ->text_is(title => "This is a - Shagadelic")
   ->text_is(h1 => 'This is a');
-is($t->tx->res->dom->at('link')->attrs->{href}, '../../styles.css', 'css link');
+is($t->tx->res->dom->at('link')->attr('href'), '../../styles.css', 'css link');
 is(
-    $t->tx->res->dom->at('#top #name a')->attrs->{href},
+    $t->tx->res->dom->at('#top #name a')->attr('href'),
     '..',
     'right home link',
 );
