@@ -49,7 +49,7 @@ sub startup {
         my $path = $c->param('cpath') // '';
 
         # delete format
-        $path =~ s/\.html$//;
+        $path =~ s/\.\w+$//;
 
         # found matching content node?
         my $content_node = $c->contenticious->find($path);
@@ -58,12 +58,19 @@ sub startup {
             return;
         }
 
-        # go
-        $c->render(
-            cpath           => $path,
-            content_node    => $content_node,
-            template        => 'content',
-        );
+        # render static content nodes
+        if ($content_node->isa('Contenticious::Content::Node::Static')) {
+            $c->res->headers->content_type(Mojolicious::Types->new->type($content_node->format));
+            $c->render(data => $content_node->raw);
+        }
+
+        else {
+            $c->render(
+                cpath           => $path,
+                content_node    => $content_node,
+                template        => 'content',
+            );
+        }
 
         # empty cache?
         $c->contenticious->empty_cache unless $c->config('cached');
@@ -92,7 +99,7 @@ __DATA__
 <h1><%= $content_node->title %></h1>
 <ul id="content_list">
 % foreach my $c (@{$content_node->children}) {
-    % my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
+    % my $url = rel_url_for 'content', cpath => $c->path, format => $c->format;
     <li><a href="<%= $url %>"><strong><%= $c->title %></strong></a></li>
 % }
 </ul>
@@ -112,8 +119,9 @@ __DATA__
     <ul class="navi" id="<%= $id_prefix %>navi">
         % foreach my $c (@{$node->children}) {
             % next if $c->name eq 'index';
+            % next if $c->format ne 'html';
             % my $class   = $c->name eq $name ? 'active' : '';
-            % my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
+            % my $url = rel_url_for 'content', cpath => $c->path, format => $c->format;
         <li class="<%= $class %>">
             <a href="<%= $url %>"><%= $c->navi_name %></a>
         </li>

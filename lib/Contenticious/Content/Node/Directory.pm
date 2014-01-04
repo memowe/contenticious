@@ -2,6 +2,7 @@ package Contenticious::Content::Node::Directory;
 use Mojo::Base 'Contenticious::Content::Node';
 
 use Contenticious::Content::Node::File;
+use Contenticious::Content::Node::Static;
 use List::Util  'first';
 use Carp;
 
@@ -20,6 +21,15 @@ sub build_children {
         # add content file node
         if ($entry =~ /.md$/ and -f -r $entry) {
             my $node = Contenticious::Content::Node::File->new(
+                filename    => $entry,
+                path_prefix => $self->path,
+            );
+            push @children, $node;
+        }
+
+        # static file?
+        elsif (-f -r $entry) {
+            my $node = Contenticious::Content::Node::Static->new(
                 filename    => $entry,
                 path_prefix => $self->path,
             );
@@ -58,7 +68,7 @@ sub build_meta {
         $meta{lc $1} = $2
             while $meta_fc =~ s/\A(\w+):\s*(.*)[\n\r]+//;
     }
-    
+
     # get meta information from 'index' node
     elsif (my $index = $self->find_child('index')) {
         $meta{$_} = $index->meta->{$_} for keys %{$index->meta};
