@@ -11,10 +11,11 @@ See http://memowe.github.com/contenticious for an introduction.
 
 PREREQUISITES
 
+    - perl 5.10.1
     - File::Copy::Recursive 0.38
-    - Mojolicious 2.4
-    - Mojolicious::Plugin::Subdispatch 0.02
-    - Mojolicious::Plugin::RelativeUrlFor 0.01
+    - Mojolicious 4.20
+    - Mojolicious::Plugin::Subdispatch 0.03
+    - Mojolicious::Plugin::RelativeUrlFor 0.02
     - Text::Markdown 1.000031
 
 
