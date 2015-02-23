@@ -32,7 +32,7 @@ WriteMakefile(
         'File::Copy::Recursive'                 => '0.38',
         'Mojolicious'                           => '4.90',
         'Mojolicious::Plugin::Subdispatch'      => '0.04',
-        'Mojolicious::Plugin::RelativeUrlFor'   => '0.02',
+        'Mojolicious::Plugin::RelativeUrlFor'   => '0.051',
         'Text::Markdown'                        => '1.000031',
     },
     EXE_FILES           => ['contenticious'],
