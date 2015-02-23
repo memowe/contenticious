@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.35    2015-02-23
+
+    - updated prerequisites
+
 0.333   2013-11-28
 
     - changed DOM tests to use attr instead of the deprecated attrs (M. 4.20)
