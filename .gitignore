@@ -11,3 +11,4 @@ MANIFEST*
 !MANIFEST.SKIP
 *META.*
 release/*
+Contenticious-*.tar.gz
