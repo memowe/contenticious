@@ -54,7 +54,7 @@ sub startup {
         # found matching content node?
         my $content_node = $c->contenticious->find($path);
         unless (defined $content_node) {
-            $c->render_not_found;
+            $c->reply->not_found;
             return;
         }
 
