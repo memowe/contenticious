@@ -35,6 +35,7 @@ is($fnode->name, 'foo', 'right extracted name');
 is($fnode->raw, <<'EOF', 'right raw content');
 Title: Simple foo file
 navi_name: Foooo
+custom_meta: custom meta content
 
 Hello wørld!
 ============
@@ -46,6 +47,7 @@ EOF
 is_deeply($fnode->meta, {
     title       => 'Simple foo file',
     navi_name   => 'Foooo',
+    custom_meta => 'custom meta content',
 }, 'right meta data');
 like($fnode->html, qr|<h1>Hello wørld!</h1>|, 'right html');
 is($fnode->title, 'Simple foo file', 'right title from meta data');
