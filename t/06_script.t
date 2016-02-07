@@ -79,7 +79,7 @@ like(
     'right About page',
 );
 ok(-f "$init_dir/public/styles.css", 'public/styles.css exists');
-like(slurp("$init_dir/public/styles.css"), qr/html, body {/, 'right css');
+like(slurp("$init_dir/public/styles.css"), qr/html, body \{/, 'right css');
 
 # cleanup
 chdir $Bin or die "W00T! $!";
