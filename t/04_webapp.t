@@ -9,8 +9,12 @@ use FindBin '$Bin';
 use lib "$Bin/../lib";
 use Contenticious::Generator;
 use utf8;
+use Mojo::Log;
+
+my $log = Mojo::Log->new;
 
 # prepare web app
+$log->debug("Bin: $Bin\n");
 chdir $Bin;
 ok(! -d 'public', "public directory doesn't exist");
 my $gen = Contenticious::Generator->new(quiet => 1);
@@ -21,6 +25,8 @@ $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
 # build web app tester
 $ENV{MOJO_HOME} = $Bin;
 my $t = Test::Mojo->new('Contenticious');
+
+$t->app->log->level('debug');
 
 # home page: listing of foo, bar, baz
 $t->get_ok('/')->status_is(200)
@@ -155,7 +161,7 @@ $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 # styles.css: stylesheet
 $t->get_ok('/styles.css')->status_is(200)
   ->content_type_is('text/css')
-  ->content_like(qr/^html, body {/);
+  ->content_like(qr/^html, body \{/);
 
 # 404
 $t->get_ok('/foomatic')->status_is(404)
@@ -168,7 +174,7 @@ $t->get_ok('/foomatic')->status_is(404)
 # perldoc
 $t->get_ok('/perldoc/Contenticious')->status_is(200)
   ->text_is(title => 'Contenticious - build web sites from markdown files')
-  ->text_is('h1 a#NAME' => 'NAME');
+  ->text_is('li a[href="#NAME"]' => 'NAME');
 
 # done
 remove_tree('public');

@@ -38,7 +38,7 @@ require("$Bin/webapp.pl");
 
 # stylesheet
 ok(-f -r "$dd/styles.css", 'stylesheet found');
-like(slurp("$dd/styles.css"), qr/#built_with a {/, 'right stylesheet');
+like(slurp("$dd/styles.css"), qr/#built_with a \{/, 'right stylesheet');
 
 # index
 ok(-f -r "$dd/index.html", 'index found');
