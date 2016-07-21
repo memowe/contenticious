@@ -1,6 +1,6 @@
 Revision history for perl module Contenticious
 
-0.36    2016-07-21
+0.38    2016-07-21
 
     - fix Mojolicious 7.0 compatibility
 

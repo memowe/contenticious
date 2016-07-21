@@ -1,7 +1,7 @@
 package Contenticious;
 use Mojo::Base 'Mojolicious';
 
-our $VERSION = '0.37';
+our $VERSION = '0.38';
 
 use Contenticious::Content;
 use Carp;
@@ -33,9 +33,6 @@ sub startup {
 
     # add content helper
     $self->helper(contenticious => sub { $self->content });
-
-    # set utf8 as default charset on all layers
-    $self->plugin(Charset => {charset => 'utf8'});
 
     # tell the renderer where to find templates
     $self->renderer->classes(['Contenticious']);
