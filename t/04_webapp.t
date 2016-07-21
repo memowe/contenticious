@@ -31,7 +31,7 @@ $t->app->log->level('debug');
 # home page: listing of foo, bar, baz
 $t->get_ok('/')->status_is(200)
   ->text_is(title => 'Shagadelic')
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*$/)
   ->text_is(h1 => '');
 is($t->tx->res->dom->at('link')->attr('href'), 'styles.css', 'right css');
 my $navi = $t->tx->res->dom->find('#navi a');
@@ -55,7 +55,7 @@ $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 # foo: single page with ø
 $t->get_ok('/foo')->status_is(200)
   ->text_is(title => 'Simple foo file - Shagadelic')
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*$/)
   ->text_is(h1 => 'Hello wørld!');
 is($t->tx->res->dom->at('link')->attr('href'), 'styles.css', 'right css');
 $navi = $t->tx->res->dom->find('#navi a');
@@ -72,7 +72,7 @@ $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 # bar: empty listing
 $t->get_ok('/bar')->status_is(200)
   ->text_is(title => 'bar Title - Shagadelic')
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*$/)
   ->text_is(h1 => 'bar Title');
 is($t->tx->res->dom->at('link')->attr('href'), 'styles.css', 'right css');
 $navi = $t->tx->res->dom->find('#navi a');
@@ -90,7 +90,7 @@ $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 # baz: directory with index page
 $t->get_ok('/baz')->status_is(200)
   ->text_is(title => "Title of baz's index - Shagadelic")
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*/)
   ->text_like('#content p'          => qr/I/)
   ->text_like('#content p strong'   => qr/has/)
   ->text_like('#content p em'       => qr/HTML/);
@@ -115,7 +115,7 @@ $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 # baz/a: "deep" page
 $t->get_ok('/baz/a')->status_is(200)
   ->text_is(title => 'This is a - Shagadelic')
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*$/)
   ->text_is(h1 => 'This is a');
 is($t->tx->res->dom->at('link')->attr('href'), '../styles.css', 'right css');
 $navi = $t->tx->res->dom->find('#navi li a');
@@ -138,7 +138,7 @@ $t->text_like('#copyright' => qr/Zaphod Beeblebrox/);
 # baz/b: "deep" page
 $t->get_ok('/baz/b')->status_is(200)
   ->text_is(title => 'b - Shagadelic')
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*$/)
   ->text_is('#content p' => 'This is b');
 is($t->tx->res->dom->at('link')->attr('href'), '../styles.css', 'right css');
 $navi = $t->tx->res->dom->find('#navi li a');
@@ -166,7 +166,7 @@ $t->get_ok('/styles.css')->status_is(200)
 # 404
 $t->get_ok('/foomatic')->status_is(404)
   ->text_is(title => 'File not found! - Shagadelic')
-  ->text_is('#top #name a' => 'Shagadelic')
+  ->text_like('#top #name a' => qr/^\s*Shagadelic\s*$/)
   ->text_is(h1 => 'File not found!')
   ->text_like('#content p' => qr/^I'm sorry/)
   ->text_like('#copyright' => qr/Zaphod Beeblebrox/);
