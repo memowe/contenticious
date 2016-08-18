@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+    <title>Your first Contenticious document - Contenticious</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="../styles.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Contenticious
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="active">
+            <a href="../first_steps.html">First steps</a>
+        </li>
+        <li class="">
+            <a href="../build_content.html">Build content</a>
+        </li>
+        <li class="">
+            <a href="../deployment.html">Deployment</a>
+        </li>
+        <li class="">
+            <a href="../customize.html">Customize</a>
+        </li>
+        <li class="">
+            <a href="../about.html">About</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="install.html">Install</a>
+        </li>
+        <li class="">
+            <a href="prepare.html">Prepare</a>
+        </li>
+        <li class="active">
+            <a href="live.html">Live!</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Your first Contenticious document</h1>
+
+<p>Now open one file with your favourite text editor, like this:</p>
+
+<pre><code>$ mvim pages/02_About.md
+</code></pre>
+
+<p>At the top you'll find some lines with a simple keyword and something after it.
+These are called <em>meta lines</em> and tell Contenticious about things it possibly
+can't find out from file names:</p>
+
+<pre><code><strong style="color: maroon">title: About Contenticious
+navi_name: About</strong>
+
+About Contenticious
+===================
+...</code></pre>
+
+<p>For example the <em>title</em> string will go to your documents title which will most
+browsers show in their window top bar. The <em>navi_name</em> is the name of this page
+as it will show up in the automagically generated page navigation.</p>
+
+<p>Try changing their values and refresh your browser to see what happens.</p>
+
+<p><strong>Important!</strong> Please make sure your editor uses UTF-8 encoding!</p>
+
+<p>Done? Great! After the meta lines you see basically Markdown, which is a simple
+but powerful language. Its main goal is to provide very good readability
+while it can be easily converted to HTML, which is what happens here.</p>
+
+<p>For example, a line with equal signs after it (<code>=</code>) under it will become
+a <code>H1</code> headline in your HTML:</p>
+
+<pre><code>About Contenticious
+===================
+</code></pre>
+
+<p>Learn more about <a href="http://daringfireball.net/projects/markdown/">Markdown</a> and edit the whole file. After a browser
+refresh you'll see the effect of your changes.</p>
+
+<h2>What's next?</h2>
+
+<p>Now you got a short impression of how Contenticious works.
+I hope you enjoyed this short tour! On the next few pages you'll learn more
+about</p>
+
+<ul>
+<li><a href="../build_content.html">how to build more complex sites</a></li>
+<li><a href="../deployment.html">how to publish your documents</a></li>
+<li><a href="../customize.html">how to customize Contenticious</a></li>
+</ul>
+
+<p><strong>Good luck!</strong></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2012
+        Mirko &quot;memowe&quot; Westermeier
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

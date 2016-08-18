@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+    <title>Customize - Contenticious</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="styles.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="./">
+            Contenticious
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="first_steps.html">First steps</a>
+        </li>
+        <li class="">
+            <a href="build_content.html">Build content</a>
+        </li>
+        <li class="">
+            <a href="deployment.html">Deployment</a>
+        </li>
+        <li class="active">
+            <a href="customize.html">Customize</a>
+        </li>
+        <li class="">
+            <a href="about.html">About</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+
+<div id="content">
+<p><img src="wrench.jpg" alt="" width="180" height="200" style="float: right; margin: 0 0 30px 40px"></p>
+
+<h1>Customize Contenticious</h1>
+
+<p><strong>It's possible to change EVERYTHING in Contenticious. But customizing it for
+your needs can be a smooth process. Just start with the simple parts.</strong></p>
+
+<p>Please look at the configuration file <code>config</code> first. It looks like this:</p>
+
+<pre><code>{
+    pages_dir   =&gt; app-&gt;home-&gt;rel_dir('pages'),
+    dump_dir    =&gt; app-&gt;home-&gt;rel_dir('dump'),
+    name        =&gt; 'Shagadelic',
+    copyright   =&gt; 'Zaphod Beeblebrox',
+    cached      =&gt; 0,
+}
+</code></pre>
+
+<p>As you can see, it is a Perl data structure and you can access the <code>app</code> shortcut for advanced hacking. I think, the most names are rather self-documenting, except <code>cached</code>. When set to a true value, contenticious will hold the document structure in memory to serve it faster. It's deactivated by default for development. Otherwise you would have to restart the server every time you want to view the latest version.</p>
+
+<p>To change the design of Contenticious' pages, edit the <code>styles.css</code> file in the <code>public</code> directory. Since the default HTML is very clean you should be able to change a lot with css changes.</p>
+
+<p>If that's still not enough, use the following command to extract all templates to a newly created templates directory:</p>
+
+<pre><code>$ ./webapp.pl inflate
+</code></pre>
+
+<p>You'll end up with four templates and one layout template:</p>
+
+<ul>
+<li><strong>content.html.ep</strong> - the main template for content pages</li>
+<li><strong>list.html.ep</strong> - a directory listing for directories without <code>index.md</code></li>
+<li><strong>navi.html.ep</strong> - the automagically generated page navigation</li>
+<li><strong>not_found.html.ep</strong> - 404 page with navigation</li>
+<li><strong>layouts/contenticious.html.ep</strong> - HTML wrapper</li>
+</ul>
+
+<p>You can change them with Mojolicious' flexible <a href="http://search.cpan.org/perldoc?Mojo%3A%3ATemplate">ep template syntax</a>.
+Good luck!</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2012
+        Mirko &quot;memowe&quot; Westermeier
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

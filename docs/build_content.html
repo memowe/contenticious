@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <title>Build content with Contenticious - Contenticious</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="styles.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="./">
+            Contenticious
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="first_steps.html">First steps</a>
+        </li>
+        <li class="active">
+            <a href="build_content.html">Build content</a>
+        </li>
+        <li class="">
+            <a href="deployment.html">Deployment</a>
+        </li>
+        <li class="">
+            <a href="customize.html">Customize</a>
+        </li>
+        <li class="">
+            <a href="about.html">About</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+
+<div id="content">
+<p><img src="pen.jpg" alt="" width="175" height="200" style="float: right; margin: 0 0 30px 40px"></p>
+
+<h1>Build content with Contenticious</h1>
+
+<p><strong>Here you'll learn how a (complex) file system structure with markdown
+documents will be rendered to web sites in detail.</strong></p>
+
+<h2>How files and directories map to web sites</h2>
+
+<p>Your directory and file names become url path parts.
+So the file <code>pages/foo/bar/baz.md</code> will be available as <code>/foo/bar/baz.html</code>.
+That's it, basically.</p>
+
+<p>The directory structure will be used to render a page navigation.
+In the example above, the content of the directory <code>pages/foo/bar</code>
+will show up as sub pages of <code>/foo/bar.html</code>.
+In the default design you'll need to click
+on the corresponding link to view the sub navigation.
+For example you need to click on <a href="first_steps.html">First Steps</a> to
+view its sub navigation.
+But what content will be visible after clicking on a directory link?
+There are two options. The first option is the simple but pretty default
+directory listing, which will be automagically generated from Contenticious.
+But if there's a file named <code>index.md</code> in that directory, Contenticious
+will render its content instead of that listing. This method is used to
+display the content of <a href="first_steps.html">First Steps</a> instead of a listing
+of its three sub pages.</p>
+
+<h2>Build the navigation you want</h2>
+
+<p>Having that automatic navigation rendering in mind, you may want to
+define two things: order and names.</p>
+
+<p>The order inside a navigation part is alphabetical like in your file managar,
+so the page named <code>bar.md</code> will show up before <code>foo.md</code>.
+If you want to change that order, just rename your file names to contain
+numbers and an underscore ("<code>_</code>") before the old name. So <code>17_foo.md</code> will go
+before <code>42_bar.md</code> but Contenticious won't show that numbers in navigation
+or URLs, so this is a great way to define an exact order.</p>
+
+<p>By default, Contenticious will use the file or directory name for the
+navigation, but this is not what you want in most cases. For example,
+<code>first_steps</code> is great in URLs, but <code>First Steps</code> would be better in a
+navigation for humans. As you learned while you created
+<a href="first_steps/live.html">your first Contenticious page</a> there's the possibility
+to provide meta information at each file's top lines. Just use <code>navi_name</code>
+to change a page's name in the automagically generated page navigation:</p>
+
+<pre><code>navi_name: First Steps
+</code></pre>
+
+<h2>Example</h2>
+
+<p>Here's a non-trivial example. The following directory structure is used to
+render this website. The generated navigation is the one you see on top.</p>
+
+<pre>file system                     urls
+-------------------------------------------------------
+pages
+  |-- index.md                  <a href="./">/</a>
+  |-- 01_first_steps (dir)
+  |     |-- index.md            <a href="first_steps.html">/first_steps.html</a>
+  |     |-- 01_install.md       <a href="first_steps/install.html">/first_steps/install.html</a>
+  |     |-- 02_prepare.md       <a href="first_steps/prepare.html">/first_steps/prepare.html</a>
+  |     '-- 03_live.md          <a href="first_steps/live.html">/first_steps/live.html</a>
+  |-- 02_build_content.md       <a href="build_content.html">/build_content.html</a>
+  |-- 03_deployment.md          <a href="deployment.html">/deployment.html</a>
+  |-- 04_customize.md           <a href="customize.html">/customize.html</a>
+  '-- 05_about.md               <a href="about.html">/about.html</a></pre>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2012
+        Mirko &quot;memowe&quot; Westermeier
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

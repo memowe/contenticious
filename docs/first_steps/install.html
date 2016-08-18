@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <title>Get and install Contenticious - Contenticious</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="../styles.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Contenticious
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="active">
+            <a href="../first_steps.html">First steps</a>
+        </li>
+        <li class="">
+            <a href="../build_content.html">Build content</a>
+        </li>
+        <li class="">
+            <a href="../deployment.html">Deployment</a>
+        </li>
+        <li class="">
+            <a href="../customize.html">Customize</a>
+        </li>
+        <li class="">
+            <a href="../about.html">About</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="active">
+            <a href="install.html">Install</a>
+        </li>
+        <li class="">
+            <a href="prepare.html">Prepare</a>
+        </li>
+        <li class="">
+            <a href="live.html">Live!</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Get and install Contenticious</h1>
+
+<p>Installing Contenticious is easy since it's a CPAN module. Just use your
+standard procedure to install it, which would be something like</p>
+
+<pre><code>$ cpan Contenticious
+</code></pre>
+
+<p>That would download Contenticious and its dependencies, run tests and
+finally install it.</p>
+
+<p><strong>Done.</strong></p>
+
+<h2>Development versions</h2>
+
+<p>To use the latest development version, you need to clone the source repository:</p>
+
+<pre><code>$ git clone git://github.com/memowe/contenticious.git
+</code></pre>
+
+<p>With <a href="https://metacpan.org/module/App::cpanminus">cpanminus</a> you can install all needed dependencies
+and Contenticious itself from here:</p>
+
+<pre><code>$ cd contenticious
+$ cpanm --sudo .
+</code></pre>
+
+<p><strong>Done.</strong></p>
+
+<p>The traditional way is also possible since Contenticious ships with
+a <code>Makefile.PL</code>:</p>
+
+<pre><code>$ cd contenticious
+$ perl Makefile.PL
+$ make
+$ make test
+$ sudo make install
+</code></pre>
+
+<p><strong>Done.</strong></p>
+
+<p>Next step: <a href="prepare.html">Prepare your first Contenticious site</a></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2012
+        Mirko &quot;memowe&quot; Westermeier
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

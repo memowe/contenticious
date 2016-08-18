@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+    <title>How to deploy Contenticious pages - Contenticious</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="styles.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="./">
+            Contenticious
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="">
+            <a href="first_steps.html">First steps</a>
+        </li>
+        <li class="">
+            <a href="build_content.html">Build content</a>
+        </li>
+        <li class="active">
+            <a href="deployment.html">Deployment</a>
+        </li>
+        <li class="">
+            <a href="customize.html">Customize</a>
+        </li>
+        <li class="">
+            <a href="about.html">About</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+
+<div id="content">
+<p><img src="kraken.jpg" alt="" width="200" height="200" style="float: right; margin: 0 0 30px 40px"></p>
+
+<h1>How to deploy Contenticious pages</h1>
+
+<p>Let's say you're done. You finished writing a few documents and you're cool
+with the site structure. Now you need to publish that content, so everyone
+in the web can look at it. Easy!</p>
+
+<h2>Generate static HTML</h2>
+
+<p>The following command generates static HTML pages. After it's done you'll find
+your <code>.html</code> files in the <code>dump</code> directory including everything from <code>public</code>.</p>
+
+<pre><code>$ <strong style="color: maroon">./webapp.pl dump</strong>
+dumping everything to /Users/memowe/Desktop/foo/dump ...
+...
+done!</code></pre>
+
+<p>Just upload it to your web hoster. Done. :-)</p>
+
+<h2>Using <code>hypnotoad</code> as a production server</h2>
+
+<p>Since Contenticious is a Mojolicious app, you can use Mojolicious' popular
+production server <code>hypnotoad</code> with Contenticious:</p>
+
+<pre><code>$ hypnotoad webapp.pl
+</code></pre>
+
+<p>Check <code>http://localhost:8080</code>, it should look like the simple <code>daemon</code> version.
+To stop hypnotoad, execute it with the <code>--stop</code> option:</p>
+
+<pre><code>$ hypnotoad --stop webapp.pl
+</code></pre>
+
+<p>Use your contenticious <code>config</code> file to configure hypnotoad:</p>
+
+<pre><code>{
+    ...
+    cached      =&gt; 0,
+
+    // production server configuration
+    hypnotoad   =&gt; {
+        listen  =&gt; ['http://*:3000'], 
+        workers =&gt; 10,  
+        proxy   =&gt; 1,
+    },
+}
+</code></pre>
+
+<p>Maybe you want to read the <a href="http://mojolicio.us/perldoc/Mojolicious/Guides/Cookbook#Hypnotoad">deployment section</a> of the excellent
+Mojolicious cookbook to learn more. Or read <a href="http://mojolicio.us/perldoc/Mojo/Server/Hypnotoad">more about hypnotoad</a>.</p>
+
+<h2>Advanced methods</h2>
+
+<p>There's a way to include Contenticious in your Mojolicious web apps. It's
+pretty straightforward with the <a href="https://metacpan.org/module/Mojolicious::Plugin::Mount">mount plugin</a>.
+There's a <a href="https://github.com/memowe/contenticious/blob/master/t/07_mount.t">test</a> for it in Contenticious' test suite.</p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2012
+        Mirko &quot;memowe&quot; Westermeier
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>

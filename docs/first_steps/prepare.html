@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+    <title>Prepare your first Contenticious site - Contenticious</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="../styles.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top">
+    <div id="inner">
+        <p id="name"><a href="..">
+            Contenticious
+        </a></p>
+    <ul class="navi" id="navi">
+        <li class="active">
+            <a href="../first_steps.html">First steps</a>
+        </li>
+        <li class="">
+            <a href="../build_content.html">Build content</a>
+        </li>
+        <li class="">
+            <a href="../deployment.html">Deployment</a>
+        </li>
+        <li class="">
+            <a href="../customize.html">Customize</a>
+        </li>
+        <li class="">
+            <a href="../about.html">About</a>
+        </li>
+    </ul>
+
+    </div><!-- inner -->
+</div><!-- top -->
+<div id="main">
+    <ul class="navi" id="subnavi">
+        <li class="">
+            <a href="install.html">Install</a>
+        </li>
+        <li class="active">
+            <a href="prepare.html">Prepare</a>
+        </li>
+        <li class="">
+            <a href="live.html">Live!</a>
+        </li>
+    </ul>
+
+<div id="content">
+<h1>Prepare your first Contenticious site</h1>
+
+<p>Contenticious builds a web site from Markdown files that it finds in a
+directory structure. But there's a little more. Use the <code>contenticious</code>
+command to generate everything you need in an empty directory:</p>
+
+<pre><code>$ cd foo
+$ <strong style="color: maroon">contenticious init</strong>
+generating contenticious boilerplate...
+  [exist] /Users/memowe/Desktop/foo
+  [write] /Users/memowe/Desktop/foo/config
+  ...
+done.</code></pre>
+
+<p>This command will generate four things for you:</p>
+
+<ul>
+<li><strong>config</strong> - a simple config file <br />
+With this config file you can tell Contenticious some basic things like
+where it'll find your content pages or your name. For now, the default
+values are fine.</li>
+<li><strong>pages</strong> - the content directory <br />
+Contenticious uses this directory to search for Markdown files.
+Three example pages are already there.</li>
+<li><strong>public</strong> - used for static content
+If you want to add something like images or PDF documents to your pages,
+just add them to this directory. You'll also find the default stylesheet
+in this directory which is used to make your content as pretty as possible.</li>
+<li><strong>webapp.pl</strong> - The actual web app script <br />
+This script will be called with several commands to work with Contenticious.</li>
+</ul>
+
+<p>As a first step with your newly created Contenticious directory,
+start the built-in server:</p>
+
+<pre><code>$ <strong style="color: maroon">./webapp.pl daemon</strong>
+...
+Server available at http://127.0.0.1:3000.</code></pre>
+
+<p>Look up that address (<code>http://127.0.0.1:3000</code>) in your favourite browser.
+You should see a nice little web site which says something like</p>
+
+<blockquote>
+  <p><strong>Hi there, Contenticious is working.</strong></p>
+</blockquote>
+
+<p>Next step: <a href="live.html">Edit your first Contenticious document</a></p>
+
+
+</div><!-- content -->
+</div><!-- main -->
+<div id="footer">
+    <p id="copyright">
+        &copy;
+        2012
+        Mirko &quot;memowe&quot; Westermeier
+    </p>
+    <p id="built_with">
+        built with
+        <a href="http://memowe.github.com/contenticious">contenticious</a>,
+        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
+    </p>
+</div><!-- footer -->
+</body>
+</html>
