@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.39    2016-09-29
+
+    - fix file/directory handling in the presence of spaces
+
 0.38    2016-07-21
 
     - fix Mojolicious 7.0 compatibility
