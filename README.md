@@ -43,12 +43,16 @@ It's possible to [view the same file without installing Contenticious](https://g
 
 ## Author and License
 
-Copyright (c) Mirko Westermeier, <mail@memowe.de>
+Copyright (c) [Mirko Westermeier](https://github.com/memowe), [mirko@westermeier.de](mailto:mirko@westermeier.de).
 
 Credits:
 
-- [Maxim Vuets](mailto:maxim.vuets@gmail.com)
-- [Stephan Jauernick](stephan@stejau.de)
+- [Joel Berger](https://github.com/jberger)
+- [John Hall](https://github.com/dancingfrog)
+- [Stephan Jauernick](https://github.com/stephan48)
+- [Keedi Kim](https://github.com/keedi)
+- [Joan Pujol Tarrés](https://github.com/mimosinnet)
+- [Maxim Vuets](https://github.com/mvuets)
 
 Thank you for your contributions!
 
