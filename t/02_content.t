@@ -20,7 +20,7 @@ like($cont->pages_dir, qr|/test_pages|, 'right pages_dir');
 # root_node
 my $rn = $cont->root_node;
 isa_ok($rn, 'Contenticious::Content::Node', 'root_node');
-my $baza = $rn->find(qw(baz a));
+my $baza = $rn->find('baz quux', 'a');
 isa_ok($baza, 'Contenticious::Content::Node::File', 'found node');
 is($baza->name, 'a', 'right name of found node');
 like($baza->html, qr|<h1>This is a</h1>|, 'right html of found node');
@@ -35,12 +35,14 @@ is_deeply($fail->root_node->children, [], 'right children array (wrong dir)');
 # find method
 is($cont->find, $cont->root_node, 'root found');
 is($cont->find('bullshit'), undef, 'bullshit not found');
-my $found = $cont->find('baz/a');
-is($found, $baza, 'baz/a found');
+my $found = $cont->find('baz quux/a');
+is($found, $baza, 'baz quux/a found');
 
 # for_all_nodes method
 my @paths = ();
 $cont->for_all_nodes(sub { push @paths, shift->path });
-is(join('|' => @paths), '|foo|bar|baz|baz/a|baz/b|baz/index', 'right paths');
+is(join('|' => @paths),
+    '|foo oof|bar|baz quux|baz quux/a|baz quux/b c|baz quux/index',
+    'right paths');
 
 __END__

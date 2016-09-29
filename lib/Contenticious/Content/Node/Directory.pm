@@ -15,6 +15,7 @@ sub build_children {
     my @children    = ();
 
     # sort and iterate directory entries
+    $dirname =~ s/ /\\ /g;
     foreach my $entry (sort glob("$dirname/*")) {
 
         # add content file node

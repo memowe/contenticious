@@ -26,12 +26,12 @@ is_deeply($node->meta, {}, 'right default meta hash');
 
 # Contenticious::Content::Node::File tests
 my $fnode = Contenticious::Content::Node::File->new(
-    filename => "$Bin/test_pages/17_foo.md",
+    filename => "$Bin/test_pages/17_foo oof.md",
 );
 isa_ok($fnode => 'Contenticious::Content::Node::File', 'generated object');
 ok(! $fnode->is_root, "isn't root");
-like($fnode->filename, qr|/test_pages/17_foo.md$|, 'right filename');
-is($fnode->name, 'foo', 'right extracted name');
+like($fnode->filename, qr|/test_pages/17_foo oof.md$|, 'right filename');
+is($fnode->name, 'foo oof', 'right extracted name');
 is($fnode->raw, <<'EOF', 'right raw content');
 Title: Simple foo file
 navi_name: Foooo
@@ -54,7 +54,7 @@ is($fnode->title, 'Simple foo file', 'right title from meta data');
 is($fnode->navi_name, 'Foooo', 'right navi_name from meta data');
 
 $fnode = Contenticious::Content::Node::File->new(
-    filename => "$Bin/test_pages/19_baz/a.md",
+    filename => "$Bin/test_pages/19_baz quux/a.md",
 );
 ok(! $fnode->is_root, "isn't root");
 is($fnode->name, 'a', 'right name');
@@ -71,15 +71,15 @@ is($fnode->title, 'This is a', 'right title (html fallback)');
 is($fnode->navi_name, 'a', 'right navi_name (name fallback)');
 
 $fnode = Contenticious::Content::Node::File->new(
-    filename => "$Bin/test_pages/19_baz/b.md",
+    filename => "$Bin/test_pages/19_baz quux/b c.md",
 );
 ok(! $fnode->is_root, "isn't root");
-is($fnode->name, 'b', 'right name');
-is($fnode->raw, "This is b\n", 'right raw content');
-is($fnode->content, "This is b\n", 'right content');
+is($fnode->name, 'b c', 'right name');
+is($fnode->raw, "This is b c\n", 'right raw content');
+is($fnode->content, "This is b c\n", 'right content');
 is_deeply($fnode->meta, {}, 'right meta data');
-is($fnode->title, 'b', 'right title (name fallback)');
-is($fnode->navi_name, 'b', 'right navi_name (name fallback');
+is($fnode->title, 'b c', 'right title (name fallback)');
+is($fnode->navi_name, 'b c', 'right navi_name (name fallback)');
 
 # Contenticious::Content::Node::Directory tests
 my $dnode = Contenticious::Content::Node::Directory->new(
@@ -101,8 +101,8 @@ my @dnc = @{$dnode->children};
 
 isa_ok($dnc[0], 'Contenticious::Content::Node::File', 'first child');
 ok(! $dnc[0]->is_root, "isn't root");
-is($dnc[0]->name, 'foo', 'right first child');
-is($dnc[0]->path, 'foo', 'right first child path');
+is($dnc[0]->name, 'foo oof', 'right first child');
+is($dnc[0]->path, 'foo oof', 'right first child path');
 
 isa_ok($dnc[1], 'Contenticious::Content::Node::Directory', 'second child');
 ok(! $dnc[1]->is_root, "isn't root");
@@ -119,15 +119,15 @@ is($dnc[1]->navi_name, 'Baaar', 'right navi_name from meta');
 
 isa_ok($dnc[2], 'Contenticious::Content::Node::Directory', 'third child');
 ok(! $dnc[2]->is_root, "isn't root");
-is($dnc[2]->name, 'baz', 'right third child');
-is($dnc[2]->path, 'baz', 'right third child path');
+is($dnc[2]->name, 'baz quux', 'right third child');
+is($dnc[2]->path, 'baz quux', 'right third child path');
 is_deeply($dnc[2]->meta, {
-    title       => "Title of baz's index",
-    navi_name   => 'Baaaz',
+    title       => "Title of baz quux's index",
+    navi_name   => 'Baaaz Quuux',
 }, 'right meta info of third child');
 like($dnc[2]->html, qr|<p>I <strong>has</strong> <em>HTML</em>|, 'right html');
-is($dnc[2]->title, "Title of baz's index", 'right title');
-is($dnc[2]->navi_name, 'Baaaz', 'right navi_name from meta');
+is($dnc[2]->title, "Title of baz quux's index", 'right title');
+is($dnc[2]->navi_name, 'Baaaz Quuux', 'right navi_name from meta');
 
 # wrong directory
 my $fail = Contenticious::Content::Node::Directory->new(filename => 'bullshit');
@@ -139,15 +139,17 @@ my $root = $dnode;
 is($root->find, $root, 'void traversing');
 is($root->find->path, '', 'right path');
 is($root->find('bullshit'), undef, 'failing search');
-is($root->find('foo'), $root->children->[0], 'foo found');
-is($root->find('foo')->path, 'foo', 'right foo path');
+is($root->find('foo oof'), $root->children->[0], 'foo oof found');
+is($root->find('foo oof')->path, 'foo oof', 'right foo path');
 is($root->find('bar'), $root->children->[1], 'bar found');
 is($root->find('bar')->path, 'bar', 'right bar path');
 is($root->find(qw(bar quux)), undef, 'bar/quux not found');
-is($root->find('baz'), $root->children->[2], 'baz found');
-is($root->find('baz')->path, 'baz', 'right baz path');
+is($root->find('baz quux'), $root->children->[2], 'baz found');
+is($root->find('baz quux')->path, 'baz quux', 'right baz path');
 is($root->find(qw(baz bullshit)), undef, 'baz/bullshit not found');
-is($root->find(qw(baz a)), $root->children->[2]->children->[0], 'baz/a found');
-is($root->find(qw(baz a))->path, 'baz/a', 'right baz/a path');
+is($root->find('baz quux', 'a'), $root->children->[2]->children->[0],
+    'baz/a found');
+is($root->find('baz quux', 'a')->path, 'baz quux/a',
+    'right baz/a path');
 
 __END__
