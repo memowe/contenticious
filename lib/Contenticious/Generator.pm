@@ -38,8 +38,8 @@ __DATA__
 
 @@ config
 {
-    pages_dir   => app->home->rel_dir('pages'),
-    dump_dir    => app->home->rel_dir('dump'),
+    pages_dir   => app->home->rel_file('pages'),
+    dump_dir    => app->home->rel_file('dump'),
     name        => 'This is Contenticious.',
     copyright   => 'Zaphod Beeblebrox',
     cached      => 0,
@@ -139,7 +139,7 @@ tools to provide a smooth Markdown publishing workflow for you.
 It's developed as open source with one of the most free [licenses][license]
 (MIT License) to make it really easy for you to get your stuff done.
 
-* [**Follow Contenticious' development on github][repo]**  
+* [**Follow Contenticious' development on github][repo]**
     There you'll find a bug tracker, a wiki and all sources.
 
 Help testing and improving Contenticious!

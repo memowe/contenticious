@@ -1,6 +1,6 @@
 {
-    pages_dir   => app->home->rel_dir('test_pages'),
-    dump_dir    => app->home->rel_dir('test_dump'),
+    pages_dir   => app->home->rel_file('test_pages'),
+    dump_dir    => app->home->rel_file('test_dump'),
     name        => 'Shagadelic',
     copyright   => 'Zaphod Beeblebrox',
     cached      => 0,

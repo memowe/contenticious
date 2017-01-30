@@ -44,8 +44,8 @@ your needs can be a smooth process. Just start with the simple parts.</strong></
 <p>Please look at the configuration file <code>config</code> first. It looks like this:</p>
 
 <pre><code>{
-    pages_dir   =&gt; app-&gt;home-&gt;rel_dir('pages'),
-    dump_dir    =&gt; app-&gt;home-&gt;rel_dir('dump'),
+    pages_dir   =&gt; app-&gt;home-&gt;rel_file('pages'),
+    dump_dir    =&gt; app-&gt;home-&gt;rel_file('dump'),
     name        =&gt; 'Shagadelic',
     copyright   =&gt; 'Zaphod Beeblebrox',
     cached      =&gt; 0,
