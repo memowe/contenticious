@@ -25,7 +25,7 @@ or
 
 See their documentation for details. To install it manually, download the dist tarball or clone the git repository and execute the following standard procedure:
 
-    $ cpanm --notest .
+    $ cpanm --installdeps --notest .
     $ perl Makefile.PL
     $ make
     $ make test
