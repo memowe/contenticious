@@ -47,12 +47,12 @@ Copyright (c) [Mirko Westermeier](https://github.com/memowe), [mirko@westermeier
 
 Credits:
 
-- [Joel Berger](https://github.com/jberger)
-- [John Hall](https://github.com/dancingfrog)
-- [Stephan Jauernick](https://github.com/stephan48)
-- [Keedi Kim](https://github.com/keedi)
-- [Joan Pujol Tarrés](https://github.com/mimosinnet)
-- [Maxim Vuets](https://github.com/mvuets)
+    - [Joel Berger](https://github.com/jberger)
+    - [John Hall](https://github.com/dancingfrog)
+    - [Stephan Jauernick](https://github.com/stephan48)
+    - [Keedi Kim](https://github.com/keedi)
+    - [Joan Pujol Tarrés](https://github.com/mimosinnet)
+    - [Maxim Vuets](https://github.com/mvuets)
 
 Thank you for your contributions!
 
