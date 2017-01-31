@@ -12,7 +12,7 @@ sub dump {
 
     # prepare directory
     my $dd = $app->config->{dump_dir};
-    $dd  //= $app->home->rel_dir('dump');
+    $dd  //= $app->home->rel_file('dump');
 
     mkdir $dd unless -d $dd;
 

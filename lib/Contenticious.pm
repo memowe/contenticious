@@ -26,7 +26,7 @@ sub startup {
     my $config = $self->plugin(Config => {file => $config_file});
 
     # prepare content
-    $self->pages_dir($config->{pages_dir} // $self->home->rel_dir('pages'));
+    $self->pages_dir($config->{pages_dir} // $self->home->rel_file('pages'));
 
     # dumping needs relative URLs
     $self->plugin('RelativeUrlFor');
