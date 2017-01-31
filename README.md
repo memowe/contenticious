@@ -6,12 +6,12 @@ See [memowe.github.com/contenticious](http://memowe.github.com/contenticious) fo
 
 ## Prerequisites
 
-    - perl 5.10.1
-    - File::Copy::Recursive 0.38
-    - Mojolicious 7.0
-    - Mojolicious::Plugin::Subdispatch 0.04
-    - Mojolicious::Plugin::RelativeUrlFor 0.052
-    - Text::Markdown 1.000031
+- perl 5.10.1
+- File::Copy::Recursive 0.38
+- Mojolicious 7.0
+- Mojolicious::Plugin::Subdispatch 0.04
+- Mojolicious::Plugin::RelativeUrlFor 0.052
+- Text::Markdown 1.000031
 
 ## Installation
 
@@ -47,13 +47,13 @@ Copyright (c) [Mirko Westermeier](https://github.com/memowe), [mirko@westermeier
 
 Credits:
 
-    - [Joel Berger](https://github.com/jberger)
-    - [John Hall](https://github.com/dancingfrog)
-    - [Stephan Jauernick](https://github.com/stephan48)
-    - [Keedi Kim](https://github.com/keedi)
-    - [Ron Storey](https://github.com/kiwiroy)
-    - [Joan Pujol Tarrés](https://github.com/mimosinnet)
-    - [Maxim Vuets](https://github.com/mvuets)
+- [Joel Berger](https://github.com/jberger)
+- [John Hall](https://github.com/dancingfrog)
+- [Stephan Jauernick](https://github.com/stephan48)
+- [Keedi Kim](https://github.com/keedi)
+- [Ron Storey](https://github.com/kiwiroy)
+- [Joan Pujol Tarrés](https://github.com/mimosinnet)
+- [Maxim Vuets](https://github.com/mvuets)
 
 Thank you for your contributions!
 
