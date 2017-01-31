@@ -51,7 +51,7 @@ Credits:
 - [John Hall](https://github.com/dancingfrog)
 - [Stephan Jauernick](https://github.com/stephan48)
 - [Keedi Kim](https://github.com/keedi)
-- [Ron Storey](https://github.com/kiwiroy)
+- [Roy Storey](https://github.com/kiwiroy)
 - [Joan Pujol Tarrés](https://github.com/mimosinnet)
 - [Maxim Vuets](https://github.com/mvuets)
 
