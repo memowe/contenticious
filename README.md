@@ -1,6 +1,6 @@
 # Contenticious [![Build Status](https://travis-ci.org/memowe/contenticious.svg?branch=master)](https://travis-ci.org/memowe/contenticious)
 
-Contenticious is a simple way to build a pretty simple website from Markdown content. It includes a helper script which will create example pages and directories for you to get you started in no time. With one single command Contenticious will create static HTML ready for upload. It's also possible to mount Contenticious in existing Mojolicious web apps.
+Contenticious is a simple way to build a pretty website from Markdown content. It includes a helper script which will create example pages and directories for you to get you started in no time. With one single command Contenticious will create static HTML ready for upload. It's also possible to mount Contenticious in existing Mojolicious web apps.
 
 See [memowe.github.com/contenticious](http://memowe.github.com/contenticious) for an introduction.
 
