@@ -100,7 +100,7 @@ __DATA__
 @@ navi.html.ep
 % my @names = split m|/| => $cpath;
 
-% if ($node->can('children')) {
+% if ($node->can('children') and @{$node->children}) {
     % my $name = shift(@names) // '';
 
     %= t ul => class => navi => begin
