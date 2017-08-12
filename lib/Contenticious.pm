@@ -135,6 +135,9 @@ __DATA__
         %= t title => $title // 'Contenticious'
     % end
     %= t body => begin
+        %= t div => id => top => begin
+            %= link_to config('name') => rel_url_for content => cpath => ''
+        % end
         %= include navi => node => contenticious->root_node;
         %= t div => id => content => begin
             %= content
