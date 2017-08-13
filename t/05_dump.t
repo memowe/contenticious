@@ -23,12 +23,9 @@ ok(! -d $dd, 'dump directory gone');
 
 # prepare web app
 ok(! -e 'webapp.pl', "webapp.pl doesn't exist");
-ok(! -d 'public', "public directory doesn't exist");
 my $gen = Contenticious::Generator->new(quiet => 1);
 $gen->generate_web_app;
-$gen->generate_public_directory;
 ok(  -e 'webapp.pl', 'webapp.pl exists');
-ok(  -e 'public/styles.css', 'stylesheet exists');
 $ENV{MOJO_LOG_LEVEL} = 'warn'; # silence!
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
 
@@ -36,15 +33,10 @@ $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
 unshift @ARGV, 'dump';
 require("$Bin/webapp.pl");
 
-# stylesheet
-ok(-f -r "$dd/styles.css", 'stylesheet found');
-like(slurp("$dd/styles.css"), qr/#built_with a \{/, 'right stylesheet');
-
 # index
 ok(-f -r "$dd/index.html", 'index found');
 my $index = Mojo::DOM->new(slurp("$dd/index.html"));
 is($index->at('title')->text, 'Shagadelic', 'right title');
-is($index->at('link')->attr('href'), 'styles.css', 'right css link');
 like($index->at('#top #name a')->text, qr/^\s*Shagadelic\s*$/, 'site name');
 my $navi = $index->find('#navi a');
 is($navi->size, 3, '3 navigation links');
@@ -70,7 +62,6 @@ like($index->at('#copyright')->text, qr/Zaphod Beeblebrox/, 'right copyright');
 ok(-f -r "$dd/foo oof.html", 'foo oof found');
 my $foo = Mojo::DOM->new(slurp("$dd/foo oof.html"));
 is($foo->at('title')->text, 'Simple foo file - Shagadelic', 'right title');
-is($foo->at('link')->attr('href'), 'styles.css', 'right css link');
 like($foo->at('#top #name a')->text, qr/^\s*Shagadelic\s*$/, 'right site name');
 $navi = $foo->find('#navi a');
 is($navi->size, 3, '3 navigation links');
@@ -88,7 +79,6 @@ like($foo->at('#copyright')->text, qr/Zaphod Beeblebrox/, 'right copyright');
 ok(-f -r "$dd/bar.html", 'bar found');
 my $bar = Mojo::DOM->new(slurp("$dd/bar.html"));
 is($bar->at('title')->text, 'bar Title - Shagadelic', 'right title');
-is($bar->at('link')->attr('href'), 'styles.css', 'right css link');
 like($bar->at('#top #name a')->text, qr/^\s*Shagadelic\s*$/, 'right site name');
 $navi = $bar->find('#navi a');
 is($navi->size, 3, '3 navigation links');
@@ -108,7 +98,6 @@ ok(-f -r "$dd/baz quux.html", 'baz quux found');
 my $baz = Mojo::DOM->new(slurp("$dd/baz quux.html"));
 is($baz->at('title')->text, "Title of baz quux's index - Shagadelic",
     'right title');
-is($baz->at('link')->attr('href'), 'styles.css', 'right css link');
 like($baz->at('#top #name a')->text, qr/^\s*Shagadelic\s*$/, 'right site name');
 $navi = $baz->find('#navi a');
 is($navi->size, 3, '3 navigation links');
@@ -135,7 +124,6 @@ like($baz->at('#copyright')->text, qr/Zaphod Beeblebrox/, 'right copyright');
 ok(-f -r "$dd/baz quux/a.html", 'baz quux/a found');
 my $baza = Mojo::DOM->new(slurp("$dd/baz quux/a.html"));
 is($baza->at('title')->text, 'This is a - Shagadelic', 'right title');
-is($baza->at('link')->attr('href'), '../styles.css', 'right css link');
 like($baza->at('#top #name a')->text, qr/^\s*Shagadelic\s*$/, 'site name');
 $navi = $baza->find('#navi a');
 is($navi->size, 3, '3 navigation links');
@@ -160,7 +148,6 @@ like($baza->at('#copyright')->text, qr/Zaphod Beeblebrox/, 'right copyright');
 ok(-f -r "$dd/baz quux/b c.html", 'baz quux/b c found');
 my $bazb = Mojo::DOM->new(slurp("$dd/baz quux/b c.html"));
 is($bazb->at('title')->text, 'b c - Shagadelic', 'right title');
-is($bazb->at('link')->attr('href'), '../styles.css', 'right css link');
 like($bazb->at('#top #name a')->text, qr/^\s*Shagadelic\s*$/, 'site name');
 $navi = $bazb->find('#navi a');
 is($navi->size, 3, '3 navigation links');
@@ -185,7 +172,5 @@ remove_tree($dd);
 ok(! -d $dd, 'dump directory gone');
 unlink('webapp.pl') or die "couldn't delete webapp.pl: $!";
 ok(! -f 'webapp.pl', 'webapp.pl deleted');
-remove_tree('public');
-ok(! -d 'public', 'public directory deleted');
 
 __END__
