@@ -98,20 +98,21 @@ __DATA__
 % end
 
 @@ navi.html.ep
-% my @names = split m|/| => $cpath;
+% my $names = stash('names') // [split m|/| => $cpath];
+% my $here  = stash('here') // 1;
 
 % if ($node->can('children') and @{$node->children}) {
-    % my $name = shift(@names) // '';
+    % my $name = shift(@$names) // '';
 
     %= t ul => class => navi => begin
         % foreach my $child (@{$node->children}) {
             % next if $child->name eq 'index';
-            % my $active = $child->name eq $name ? 'active' : '';
+            % my $h = ($here && $child->name eq $name) ? 'active' : '';
 
-            %= t li => class => $active => begin
+            %= t li => class => $h => begin
                 % my $url = rel_url_for content => cpath => $child->path => format => 'html';
                 %= link_to $child->navi_name => $url
-                %= include navi => node => $child
+                %= include navi => node => $child, names => $names, here => $h;
             % end
         % }
     % end
