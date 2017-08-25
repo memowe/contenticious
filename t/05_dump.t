@@ -24,10 +24,10 @@ ok(! -d $dd, 'dump directory gone');
 # prepare web app
 ok(! -e 'webapp.pl', "webapp.pl doesn't exist");
 ok(! -d 'public', "public directory doesn't exist");
-my $gen = Contenticious::Generator->new(quiet => 1);
-$gen->generate_web_app;
-$gen->generate_public_directory;
+my $gen = Contenticious::Generator->new();
+$gen->generate_file('webapp.pl');
 ok(  -e 'webapp.pl', 'webapp.pl exists');
+$gen->generate_file('public/styles.css');
 ok(  -e 'public/styles.css', 'stylesheet exists');
 $ENV{MOJO_LOG_LEVEL} = 'warn'; # silence!
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
