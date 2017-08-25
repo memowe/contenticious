@@ -46,7 +46,6 @@ Contenticious builds websites from Markdown documents. Commands:
                     config      a config file (Perl like)
                     webapp.pl   a mojolicious web app which serves your files
                     pages       put markdown documents here (with examples)
-                    public      public files like a stylesheet
 
     version     prints the Contenticious version you are using
 
