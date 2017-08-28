@@ -29,7 +29,7 @@ delete_test_files();
 # generate in t
 chdir $Bin;
 my $generator = Contenticious::Generator->new(quiet => 1);
-$generator->init;
+$generator->generate;
 
 # config file
 is(slurp('config'), <<'EOD', 'right config file content');

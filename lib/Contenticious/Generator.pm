@@ -2,7 +2,7 @@ package Contenticious::Generator;
 use Mojo::Base 'Mojolicious::Command';
 
 # store everything in files
-sub init {
+sub generate {
     my $self = shift;
     $self->generate_config_file;
     $self->generate_web_app;
@@ -44,7 +44,7 @@ Contenticious::Generator - generates contenticious boilerplate
 
     use Contenticious::Generator;
     my $generator = Contenticious::Generator->new;
-    $generator->init;
+    $generator->generate;
 
 =head1 DESCRIPTION
 
@@ -78,7 +78,7 @@ Generates I<pages>.
 
 Generates I<public>.
 
-=head2 C<init>
+=head2 C<generate>
 
 Generates everything from above.
 
