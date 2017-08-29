@@ -223,9 +223,19 @@ Credits:
 
 =over 4
 
-=item * Maxim Vuets, <maxim.vuets@gmail.com>
+=item * Joel Berger, L<https://github.com/jberger>
 
-=item * Stephan Jauernick, <stephan@stejau.de>
+=item * John Hall, L<https://github.com/dancingfrog>
+
+=item * Stephan Jauernick, L<https://github.com/stephan48>
+
+=item * Keedi Kim, L<https://github.com/keedi>
+
+=item * Roy Storey, L<https://github.com/kiwiroy>
+
+=item * Joan Pujol Tarrés, L<https://github.com/mimosinnet>
+
+=item * Maxim Vuets, L<https://github.com/mvuets>
 
 =back
 
