@@ -70,7 +70,7 @@ Now start the server:
     $ ./webapp.pl daemon
     ...
     Server available at http://127.0.0.1:3000.
-    
+
 If you point your web browser to that address, you should see some example
 pages served directly (and updated live) from the pages directory. Feel free
 to edit that content and watch what happens in your browser.
@@ -186,8 +186,8 @@ it as well:
         ...
         cached      => 0,
         hypnotoad   => {
-            listen  => ['http://*:3000'], 
-            workers => 10,  
+            listen  => ['http://*:3000'],
+            workers => 10,
             proxy   => 1,
         },
     }
