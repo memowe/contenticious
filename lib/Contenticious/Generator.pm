@@ -3,11 +3,12 @@ use Mojo::Base -base;
 
 use File::Basename;
 use File::Spec::Functions; # catdir, catfiles
+use File::Share 'dist_dir';
 use FindBin;
 use File::Path 'make_path';
 use File::Copy;
 
-has share_directory     => catdir dirname(__FILE__), '..', '..', 'share';
+has share_directory     => dist_dir 'Contenticious';
 has working_directory   => $FindBin::Bin;
 
 has files => sub{[
