@@ -2,8 +2,9 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 16;
 use File::Path 'remove_tree';
+use File::Spec::Functions; # catfile
 use FindBin '$Bin';
 use lib "$Bin/../lib";
 use Contenticious::Generator;
@@ -17,7 +18,8 @@ sub slurp {
 
 # delete test files and test non-existence
 sub delete_test_files {
-    foreach my $file (qw(config webapp.pl pages)) {
+
+    foreach my $file (qw(config public webapp.pl pages)) {
         remove_tree("$Bin/$file");
         ok(! -e "$Bin/$file", "$file doesn't exist");
     }
@@ -28,8 +30,7 @@ delete_test_files();
 
 # generate in t
 chdir $Bin;
-my $generator = Contenticious::Generator->new(quiet => 1);
-$generator->init;
+Contenticious::Generator->new->generate;
 
 # config file
 is(slurp('config'), <<'EOD', 'right config file content');
@@ -175,6 +176,11 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 EOD
+
+# test static assets
+ok(-e catfile(qw(public css bootstrap.css)), 'bootstrap.css exists');
+ok(-e catfile(qw(public js bootstrap.js)), 'bootstrap.js exists');
+ok(-e catfile(qw(public js jquery.js)), 'jquery.js exists');
 
 # we're done
 delete_test_files();

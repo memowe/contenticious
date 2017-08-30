@@ -1,0 +1,8 @@
+{
+    pages_dir   => app->home->rel_file('pages'),
+    dump_dir    => app->home->rel_file('dump'),
+    name        => 'This is Contenticious.',
+    copyright   => 'Zaphod Beeblebrox',
+    cached      => 0,
+    perldoc     => 1,
+}

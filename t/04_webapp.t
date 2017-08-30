@@ -2,8 +2,9 @@
 
 use strict;
 use warnings;
-use Test::More tests => 143;
+use Test::More tests => 146;
 use Test::Mojo;
+use File::Copy;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
@@ -15,6 +16,11 @@ my $log = Mojo::Log->new;
 
 # prepare web app
 $log->debug("Bin: $Bin\n");
+chdir $Bin;
+ok(! -d 'public', "public directory doesn't exist");
+my $gen = Contenticious::Generator->new;
+$gen->generate_file('public/js/jquery.js');
+ok(  -e 'public/js/jquery.js', 'jquery exists');
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
 
 # build web app tester
@@ -198,5 +204,9 @@ $t->get_ok('/foomatic')->status_is(404)
 $t->get_ok('/perldoc/Contenticious')->status_is(200)
   ->text_is(title => 'Contenticious - build web sites from markdown files')
   ->text_is('li a[href="#NAME"]' => 'NAME');
+
+# done
+remove_tree('public');
+ok(! -d 'public', 'public directory deleted');
 
 __END__

@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 NAME
 
 Contenticious - build web sites from markdown files
@@ -70,7 +72,7 @@ Now start the server:
     $ ./webapp.pl daemon
     ...
     Server available at http://127.0.0.1:3000.
-    
+
 If you point your web browser to that address, you should see some example
 pages served directly (and updated live) from the pages directory. Feel free
 to edit that content and watch what happens in your browser.
@@ -186,8 +188,8 @@ it as well:
         ...
         cached      => 0,
         hypnotoad   => {
-            listen  => ['http://*:3000'], 
-            workers => 10,  
+            listen  => ['http://*:3000'],
+            workers => 10,
             proxy   => 1,
         },
     }
@@ -223,9 +225,19 @@ Credits:
 
 =over 4
 
-=item * Maxim Vuets, <maxim.vuets@gmail.com>
+=item * Joel Berger, L<https://github.com/jberger>
 
-=item * Stephan Jauernick, <stephan@stejau.de>
+=item * John Hall, L<https://github.com/dancingfrog>
+
+=item * Stephan Jauernick, L<https://github.com/stephan48>
+
+=item * Keedi Kim, L<https://github.com/keedi>
+
+=item * Roy Storey, L<https://github.com/kiwiroy>
+
+=item * Joan Pujol Tarrés, L<https://github.com/mimosinnet>
+
+=item * Maxim Vuets, L<https://github.com/mvuets>
 
 =back
 

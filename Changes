@@ -1,5 +1,9 @@
 Revision history for perl module Contenticious
 
+0.4     TODO
+
+    - generate boilerplate from file system
+
 0.391   2017-01-31
 
     - keep up with changes in Mojo::Home (@kiwiroy)

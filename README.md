@@ -6,12 +6,15 @@ See [memowe.github.com/contenticious](http://memowe.github.com/contenticious) fo
 
 ## Prerequisites
 
-- perl 5.10.1
-- File::Copy::Recursive 0.38
-- Mojolicious 7.0
-- Mojolicious::Plugin::Subdispatch 0.04
-- Mojolicious::Plugin::RelativeUrlFor 0.052
-- Text::Markdown 1.000031
+Package | Version
+---|---
+perl | 5.10.1
+File::Copy::Recursive | 0.38
+Mojolicious | 7.0
+Mojolicious::Plugin::AssetPack | 1.45
+Mojolicious::Plugin::RelativeUrlFor | 0.052
+Mojolicious::Plugin::Subdispatch | 0.04
+Text::Markdown | 1.000031
 
 ## Installation
 

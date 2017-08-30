@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 132;
+use Test::More tests => 135;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
@@ -23,9 +23,12 @@ ok(! -d $dd, 'dump directory gone');
 
 # prepare web app
 ok(! -e 'webapp.pl', "webapp.pl doesn't exist");
-my $gen = Contenticious::Generator->new(quiet => 1);
-$gen->generate_web_app;
+ok(! -d 'public', "public directory doesn't exist");
+my $gen = Contenticious::Generator->new();
+$gen->generate_file('webapp.pl');
 ok(  -e 'webapp.pl', 'webapp.pl exists');
+$gen->generate_file('public/js/jquery.js');
+ok(  -e 'public/js/jquery.js', 'jquery exists');
 $ENV{MOJO_LOG_LEVEL} = 'warn'; # silence!
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
 
@@ -203,5 +206,7 @@ remove_tree($dd);
 ok(! -d $dd, 'dump directory gone');
 unlink('webapp.pl') or die "couldn't delete webapp.pl: $!";
 ok(! -f 'webapp.pl', 'webapp.pl deleted');
+remove_tree('public');
+ok(! -d 'public', 'public directory deleted');
 
 __END__
