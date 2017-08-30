@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More tests => 132;
 use Test::Mojo;
+use File::Copy;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
@@ -17,8 +18,8 @@ my $log = Mojo::Log->new;
 $log->debug("Bin: $Bin\n");
 chdir $Bin;
 ok(! -d 'public', "public directory doesn't exist");
-my $gen = Contenticious::Generator->new(quiet => 1);
-$gen->generate_public_directory;
+my $gen = Contenticious::Generator->new;
+$gen->generate_file('public/styles.css');
 ok(  -e 'public/styles.css', 'stylesheet exists');
 $ENV{CONTENTICIOUS_CONFIG} = "$Bin/test_config";
 

@@ -4,6 +4,9 @@ use strict;
 use warnings;
 
 use ExtUtils::MakeMaker;
+use File::ShareDir::Install;
+
+install_share dist => 'share';
 
 WriteMakefile(
     NAME                => 'Contenticious',
@@ -23,18 +26,26 @@ WriteMakefile(
 
         # core modules since 5.10
         'Carp'                                  => '1.08',
+        'Cwd'                                   => '3.62',
         'File::Basename'                        => '2.76',
+        'File::Copy'                            => '2.11',
         'File::Path'                            => '2.04',
+        'File::Spec'                            => '3.62',
         'FindBin'                               => '1.49',
         'List::Util'                            => '1.19',
 
         # non-trivial dependencies
         'File::Copy::Recursive'                 => '0.38',
+        'File::Share'                           => '0.25',
         'Mojolicious'                           => '7.0',
-        'Mojolicious::Plugin::Subdispatch'      => '0.04',
+        'Mojolicious::Plugin::AssetPack'        => '1.45',
         'Mojolicious::Plugin::RelativeUrlFor'   => '0.052',
+        'Mojolicious::Plugin::Subdispatch'      => '0.04',
         'Text::Markdown'                        => '1.000031',
     },
     EXE_FILES           => ['contenticious'],
     test                => {TESTS => 't/*.t'}
 );
+
+package MY;
+use File::ShareDir::Install 'postamble';
