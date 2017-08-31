@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite;
+
+plugin AssetPack => {pipes => [qw(Less)]};
+app->asset->process('foo.css' => ('less/foo.less'));
+
+get '/' => sub {
+    my $c = shift;
+    $c->render(template => 'index');
+};
+
+app->start;
+__DATA__
+
+@@ index.html.ep
+% layout 'default';
+% title 'Welcome';
+<h1>Welcome to the Mojolicious real-time web framework!</h1>
+To learn more, you can browse through the documentation
+<%= link_to 'here' => '/perldoc' %>.
+
+@@ less/foo.less
+@base: navy;
+
+body {
+    background: lighten(@base, 30%);
+    h1 {
+        color: lighten(@base, 50%);
+    }
+}
+
+@@ layouts/default.html.ep
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    %= asset 'foo.css'
+</head>
+<body><%= content %></body>
+</html>
