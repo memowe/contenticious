@@ -1,6 +1,6 @@
-- Changes
-- Dependencies (README.md)
-- Credits (README.md and Contenticious.pod)
-- Version (Contenticious.pm)
-- make manifest
-- make distcheck
+- [ ] Changes
+- [ ] Dependencies (README.md)
+- [ ] Credits (README.md and Contenticious.pod)
+- [ ] Version (Contenticious.pm)
+- [ ] make manifest
+- [ ] make distcheck
