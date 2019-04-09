@@ -1,8 +1,9 @@
 Revision history for perl module Contenticious
 
-0.4     TODO
+0.392   2018-04-09
 
     - generate boilerplate from file system
+    - use M::P::PODViewer (M::P::PODRenderer is deprecated since M 8.05)
 
 0.391   2017-01-31
 
