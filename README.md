@@ -10,8 +10,10 @@ Package | Version
 ---|---
 perl | 5.10.1
 File::Copy::Recursive | 0.38
-Mojolicious | 7.0
+File::Share | 0.25
+Mojolicious | 8.05
 Mojolicious::Plugin::AssetPack | 1.45
+Mojolicious::Plugin::PODViewer | 0.004
 Mojolicious::Plugin::RelativeUrlFor | 0.052
 Mojolicious::Plugin::Subdispatch | 0.04
 Text::Markdown | 1.000031
