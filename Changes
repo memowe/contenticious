@@ -1,5 +1,8 @@
 Revision history for perl module Contenticious
 
+0.393   2018-04-10
+    - Bugfix release because of a non-stated dependency
+
 0.392   2018-04-09
 
     - generate boilerplate from file system

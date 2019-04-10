@@ -18,6 +18,11 @@ Mojolicious::Plugin::RelativeUrlFor | 0.052
 Mojolicious::Plugin::Subdispatch | 0.04
 Text::Markdown | 1.000031
 
+Build requires
+Package | Version
+---|---
+File::ShareDir::Install | 0.13
+
 ## Installation
 
 This distribution is available on CPAN. You can install it like any other CPAN module via
@@ -56,6 +61,7 @@ Credits:
 - [John Hall](https://github.com/dancingfrog)
 - [Stephan Jauernick](https://github.com/stephan48)
 - [Keedi Kim](https://github.com/keedi)
+- [Slaven Rezić](https://github.com/eserte)
 - [Roy Storey](https://github.com/kiwiroy)
 - [Joan Pujol Tarrés](https://github.com/mimosinnet)
 - [Maxim Vuets](https://github.com/mvuets)

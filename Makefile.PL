@@ -44,6 +44,10 @@ WriteMakefile(
         'Mojolicious::Plugin::Subdispatch'      => '0.04',
         'Text::Markdown'                        => '1.000031',
     },
+    CONFIGURE_REQUIRES  => {
+        'ExtUtils::MakeMaker'                   => 0,
+        'File::ShareDir::Install'               => '0.13',
+    },
     EXE_FILES           => ['contenticious'],
     test                => {TESTS => 't/*.t'}
 );

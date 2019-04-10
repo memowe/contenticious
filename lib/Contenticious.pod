@@ -233,6 +233,8 @@ Credits:
 
 =item * Keedi Kim, L<https://github.com/keedi>
 
+=item * Slaven Rezić, L<https://github.com/eserte>
+
 =item * Roy Storey, L<https://github.com/kiwiroy>
 
 =item * Joan Pujol Tarrés, L<https://github.com/mimosinnet>
