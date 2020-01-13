@@ -14,7 +14,9 @@ has working_directory   => $FindBin::Bin;
 has files => sub{[
     catfile(qw(config)),
     catfile(qw(webapp.pl)),
-    catfile(qw(public styles.css)),
+    catfile(qw(public css bootstrap.css)),
+    catfile(qw(public js bootstrap.js)),
+    catfile(qw(public js jquery.js)),
     catfile(qw(pages index.md)),
     catfile(qw(pages 01_Perldoc.md)),
     catfile(qw(pages 02_About.md)),

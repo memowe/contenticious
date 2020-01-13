@@ -25,7 +25,7 @@ sub build_name {
 
     # delete prefix
     $base =~ s/^\d+_//;
-    
+
     # delete suffix
     $base =~ s/\.\w+$//;
 

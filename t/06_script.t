@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 17;
 use File::Path 'remove_tree';
 use FindBin '$Bin';
 use lib "$Bin/../lib";
@@ -78,8 +78,6 @@ like(
     qr/Copyright \(c\) Mirko Westermeier, <mail\@memowe.de>/,
     'right About page',
 );
-ok(-f "$init_dir/public/styles.css", 'public/styles.css exists');
-like(slurp("$init_dir/public/styles.css"), qr/html, body \{/, 'right css');
 
 # cleanup
 chdir $Bin or die "W00T! $!";

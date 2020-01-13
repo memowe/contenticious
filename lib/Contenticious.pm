@@ -78,93 +78,83 @@ sub startup {
 __DATA__
 
 @@ content.html.ep
+
 % layout 'contenticious', title => $content_node->title;
+
 % if (defined $content_node->html) {
-%== $content_node->html
+    %== $content_node->html
 % } else {
-%= include 'list', content_node => $content_node
+    %= include list => content_node => $content_node
 % }
 
 @@ list.html.ep
-<h1><%= $content_node->title %></h1>
-<ul id="content_list">
-% foreach my $c (@{$content_node->children}) {
-    % my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
-    <li><a href="<%= $url %>"><strong><%= $c->title %></strong></a></li>
-% }
-</ul>
+%= t h1 => $content_node->title || config('name')
+
+%= t ul => id => content_list => begin
+    % foreach my $child (@{$content_node->children}) {
+        % my $url = rel_url_for content => cpath => $child->path => format => 'html';
+        %= t li => link_to $child->title => $url
+    % }
+% end
 
 @@ navi.html.ep
-% my $node      = contenticious->root_node;
-% my @names     = split m|/| => $cpath;
-% my $level     = 1;
-% LOOP: { do { # perldoc perlsyn: do-while isn't a loop
-    % last unless $node->can('children');
-    % my $name      = shift(@names) // '';
-    % my $id_prefix = 'sub' x ($level - 1);
-    % unless (
-    %   (defined stash('only') and stash('only') != $level) or
-    %   (defined stash('only_not') and stash('only_not') == $level)
-    % ) {
-    <ul class="navi" id="<%= $id_prefix %>navi">
-        % foreach my $c (@{$node->children}) {
-            % next if $c->name eq 'index';
-            % my $class   = $c->name eq $name ? 'active' : '';
-            % my $url = rel_url_for 'content', cpath => $c->path, format => 'html';
-        <li class="<%= $class %>">
-            <a href="<%= $url %>"><%= $c->navi_name %></a>
-        </li>
+% my $names = stash('names') // [split m|/| => $cpath];
+% my $here  = stash('here') // 1;
+
+% if ($node->can('children') and @{$node->children}) {
+    % my $name = shift(@$names) // '';
+
+    %= t ul => class => navi => begin
+        % foreach my $child (@{$node->children}) {
+            % next if $child->name eq 'index';
+            % my $h = ($here && $child->name eq $name) ? 'active' : '';
+
+            %= t li => class => $h => begin
+                % my $url = rel_url_for content => cpath => $child->path => format => 'html';
+                %= link_to $child->navi_name => $url
+                %= include navi => node => $child, names => $names, here => $h;
+            % end
         % }
-    </ul>
-    % }
-    % $node = $node->find($name) or last;
-    % $level++;
-% } while 1 }
+    % end
+
+% }
 
 @@ not_found.html.ep
-% my $url = $self->req->url;
 % layout 'contenticious', title => 'File not found!';
-<h1>File not found!</h1>
-<p>I'm sorry, but I couldn't find what you were looking for:</p>
-<p><strong><%= $url %></strong></p>
+%= t h1 => 'File not found!'
+%= t p => begin
+    I'm sorry, but I couldn't find what you were looking for:
+    %= t strong => t tt => $self->req->url
+% end
 
 @@ layouts/contenticious.html.ep
 <!doctype html>
-<html>
-<head>
-    % my $t = join ' - ' => grep { $_ } stash('title'), config('name');
-    <title><%= $t || 'contenticious!' %></title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="<%= rel_url_for 'styles.css' %>">
-</head>
-<body>
-<div id="top">
-    <div id="inner">
-        <p id="name"><a href="<%= rel_url_for 'content', cpath => '' %>">
-            <%= config('name') // 'contenticious!' %>
-        </a></p>
-%= include 'navi', only => 1
-    </div><!-- inner -->
-</div><!-- top -->
-<div id="main">
-%= include 'navi', only_not => 1
-<div id="content">
-%= content
-</div><!-- content -->
-</div><!-- main -->
-<div id="footer">
-    % if (config 'copyright') {
-    <p id="copyright">
-        &copy;
-        <%= 1900 + (localtime)[5] %>
-        <%= config 'copyright' %>
-    </p>
-    % }
-    <p id="built_with">
-        built with
-        <a href="http://memowe.github.com/contenticious">contenticious</a>,
-        on top of <a href="http://mojolicio.us/">Mojolicious</a>.
-    </p>
-</div><!-- footer -->
-</body>
-</html>
+%= t html => begin
+    %= t head => begin
+        %= t meta => charset => 'UTF-8'
+        % my $title = join ' - ' => grep {$_} stash('title'), config('name');
+        %= t title => $title // 'Contenticious'
+    % end
+    %= t body => begin
+        %= t div => id => top => begin
+            %= link_to config('name') => rel_url_for content => cpath => ''
+        % end
+        %= include navi => node => contenticious->root_node;
+        %= t div => id => content => begin
+            %= content
+        % end
+    % end
+    %= t footer => begin
+        % if (config 'copyright') {
+            %= t p => id => copyright => begin
+                &copy; <%= 1900 + (localtime)[5] %> <%= config 'copyright' %>.
+            % end
+        % }
+        %= t p => id => built_with => begin
+            Built with
+            <%= link_to Contenticious => 'https://github.com/memowe/contenticious' %>,
+            on top of
+            <%= link_to Mojolicious => 'http://mojolicious.org' %>.
+        % end
+    % end
+% end
