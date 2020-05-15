@@ -13,6 +13,8 @@ has meta        => sub { {} };
 has html        => sub { shift->build_html };
 has title       => sub { shift->build_title };
 has navi_name   => sub { shift->build_navi_name };
+has extension   => sub { '.html' };
+has format      => sub { 'html' };
 
 sub build_name {
     my $self = shift;
@@ -25,7 +27,7 @@ sub build_name {
 
     # delete prefix
     $base =~ s/^\d+_//;
-    
+
     # delete suffix
     $base =~ s/\.\w+$//;
 

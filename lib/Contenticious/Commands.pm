@@ -36,10 +36,11 @@ sub dump {
 
         # determine dump file path
         my $path = $node->is_root ? 'index' : $node->path;
-        my $df   = "$dd/$path.html";
+        my $ext  = $node->extension;
+        my $df   = "$dd/${path}${ext}";
 
         # log 1
-        print "$path.html ... ";
+        print "${path}${ext} ... ";
 
         # create directory if needed
         mkdir "$dd/$path"

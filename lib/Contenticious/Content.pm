@@ -39,7 +39,7 @@ sub for_all_nodes {
 # not a public method but a recursive utitlity function
 sub _walk_tree {
     my ($node, $sub) = @_;
-    
+
     # execute
     $sub->($node);
 
